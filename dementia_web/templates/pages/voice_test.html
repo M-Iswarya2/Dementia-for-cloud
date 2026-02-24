@@ -81,10 +81,6 @@
 
 {% block extra_js %}
 <script>
-/* ================= CONFIG ================= */
-const MIN_DURATION = 30;
-const MAX_DURATION = 60;
-
 /* ================= GLOBALS ================= */
 let mediaRecorder;
 let audioChunks = [];
@@ -112,7 +108,7 @@ function updateTimer() {
     timer.style.display = 'block';
 }
 
-/* ================= WAV ================= */
+/* ================= WAV CONVERSION ================= */
 async function convertToWav(blob) {
     const ctx = new AudioContext();
     const buffer = await ctx.decodeAudioData(await blob.arrayBuffer());
@@ -151,19 +147,6 @@ function write(view, offset, text) {
         view.setUint8(offset + i, text.charCodeAt(i));
 }
 
-/* ================= VALIDATION ================= */
-function validDuration() {
-    if (seconds < MIN_DURATION) {
-        alert("❌ Minimum 30 seconds required");
-        return false;
-    }
-    if (seconds > MAX_DURATION) {
-        alert("❌ Maximum 60 seconds allowed");
-        return false;
-    }
-    return true;
-}
-
 /* ================= MIC RECORD ================= */
 recordBtn.onclick = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -174,7 +157,6 @@ recordBtn.onclick = async () => {
     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
 
     mediaRecorder.onstop = async () => {
-        if (!validDuration()) return resetAll();
         recordedBlob = await convertToWav(new Blob(audioChunks));
         audioPlayback.src = URL.createObjectURL(recordedBlob);
         audioPreview.style.display = 'block';
@@ -190,7 +172,6 @@ recordBtn.onclick = async () => {
     timerInterval = setInterval(() => {
         seconds++;
         updateTimer();
-        if (seconds >= MAX_DURATION) stopBtn.click();
     }, 1000);
 };
 
@@ -201,7 +182,7 @@ stopBtn.onclick = () => {
     stopBtn.disabled = true;
 };
 
-/* ================= UPLOAD ================= */
+/* ================= UPLOAD (NO LIMIT) ================= */
 audioFileInput.onchange = async e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -210,8 +191,6 @@ audioFileInput.onchange = async e => {
     const buf = await ctx.decodeAudioData(await file.arrayBuffer());
     seconds = Math.floor(buf.duration);
     updateTimer();
-
-    if (!validDuration()) return resetAll();
 
     recordedBlob = await convertToWav(file);
     audioPlayback.src = URL.createObjectURL(recordedBlob);
@@ -248,10 +227,6 @@ submitBtn.onclick = async () => {
 
         const data = await res.json();
 
-        // Save score in sessionStorage (optional)
-        sessionStorage.setItem('voiceScore', data.voice_score);
-
-        // Submit to Django backend
         const csrfToken = "{{ csrf_token }}";
 
         await fetch("{% url 'submit_voice_score' %}", {
@@ -263,7 +238,6 @@ submitBtn.onclick = async () => {
             body: JSON.stringify({ score: data.voice_score })
         });
 
-        // Redirect to Take Test hub
         window.location.href = "{% url 'take_test' %}";
 
     } catch (err) {

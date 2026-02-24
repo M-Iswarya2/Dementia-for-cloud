@@ -171,7 +171,7 @@ def dashboard(request):
     assessment_history = (
         DementiaAssessment.objects
         .filter(user=request.user)
-        .order_by("-id")
+        .order_by("id")
     )
 
     return render(request, "pages/dashboard.html", {

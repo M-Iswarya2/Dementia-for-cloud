@@ -127,17 +127,27 @@ function displayDashboardData(data) {
     document.getElementById('total-assessments-info').textContent = `${data.completed_this_month || 0} this month`;
 
     // Calculate trend: compare last two assessments
-    if (data.assessment_history && data.assessment_history.length >= 2) {
-        const lastScore = data.assessment_history[data.assessment_history.length - 1].score * 100;
-        const prevScore = data.assessment_history[data.assessment_history.length - 2].score * 100;
-        const diff = lastScore - prevScore;
-        const trendLabel = diff < 0 ? 'Improving' : diff > 0 ? 'Worsening' : 'Stable';
-        document.getElementById('trend').textContent = trendLabel;
-        document.getElementById('trend-info').textContent = `Change: ${diff.toFixed(1)}`;
-    } else {
-        document.getElementById('trend').textContent = '--';
-        document.getElementById('trend-info').textContent = '--';
-    }
+        if (data.assessment_history && data.assessment_history.length >= 2) {
+            const latestScore = data.assessment_history[0].score * 100;
+            const previousScore = data.assessment_history[1].score * 100;
+
+            const diff = latestScore - previousScore;
+
+            let trendLabel;
+            if (diff > 0) {
+                trendLabel = 'Improving';
+            } else if (diff < 0) {
+                trendLabel = 'Worsening';
+            } else {
+                trendLabel = 'Stable';
+            }
+
+            document.getElementById('trend').textContent = trendLabel;
+            document.getElementById('trend-info').textContent = `Change: ${Math.abs(diff).toFixed(1)}`;
+        } else {
+            document.getElementById('trend').textContent = '--';
+            document.getElementById('trend-info').textContent = '--';
+        }
 
     // Assessment History Table
     if (data.assessment_history && data.assessment_history.length > 0) {
