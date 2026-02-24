@@ -1,0 +1,263 @@
+/* PAGE WRAPPER */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: linear-gradient(135deg, #f8f9ff 0%, #60ade0 100%);
+}
+
+/* SCROLLABLE CONTENT CONTAINER */
+.home-container {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* HERO SECTION */
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: radial-gradient(circle at 30% 50%, rgba(139,92,246,0.08), transparent 60%);
+}
+
+.hero-content {
+  max-width: 700px;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1e293b;
+  margin: 0;
+}
+
+.hero-title-highlight {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #7c3aed;
+  margin: 0;
+  margin-bottom: 24px;
+}
+
+.hero-description {
+  font-size: 18px;
+  color: #475569;
+  line-height: 1.7;
+  margin: 0 auto;
+  margin-bottom: 36px;
+  max-width: 580px;
+}
+
+.primary-btn {
+  display: inline-block;
+  background: #0066ff;
+  color: white;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+
+.primary-btn:hover {
+  background: #0052cc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4);
+}
+
+/* HOW IT WORKS SECTION */
+.how-it-works {
+  background: white;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.how-it-works h2 {
+  font-size: 42px;
+  color: #1e293b;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.section-subtitle {
+  font-size: 18px;
+  color: #64748b;
+  max-width: 700px;
+  margin: 0 auto 60px;
+  line-height: 1.6;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto 50px;
+}
+
+.step-card {
+  padding: 40px 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  border: 2px solid #e2e8f0;
+}
+
+.step-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  border-color: #7c3aed;
+}
+
+.step-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.step-icon-1 {
+  background: #f0f0f0;
+  color: #64748b;
+}
+
+.step-icon-2 {
+  background: #d1f4ff;
+  color: #0891b2;
+}
+
+.step-icon-3 {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.step-icon-4 {
+  background: #f0f0f0;
+  color: #64748b;
+}
+
+.step-card:hover .step-icon {
+  transform: scale(1.1);
+}
+
+.step-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.step-card p {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cta-button {
+  display: inline-block;
+  background: #1e293b;
+  color: white;
+  padding: 16px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.cta-button:hover {
+  background: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 41, 59, 0.3);
+}
+
+/* SECTIONS */
+.section {
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.section h2 {
+  font-size: 42px;
+  color: #7c3aed;
+  margin-bottom: 24px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.section p {
+  font-size: 18px;
+  color: #475569;
+  line-height: 1.7;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* RESPONSIVE */
+@media screen and (min-width: 768px) {
+  .steps-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hero-section {
+    padding: 40px 20px;
+  }
+
+  .hero-title,
+  .hero-title-highlight {
+    font-size: 38px;
+  }
+  
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .how-it-works h2 {
+    font-size: 32px;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .section {
+    min-height: auto;
+    padding: 60px 20px;
+  }
+  
+  .section h2 {
+    font-size: 32px;
+  }
+}

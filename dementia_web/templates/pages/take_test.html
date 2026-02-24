@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Take Assessment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/take_test.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="assessment-container">
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-icon">🧠</div>
+            <h1 class="hero-title">Dementia Assessment</h1>
+            <p class="hero-subtitle">
+                Complete all tests to receive your comprehensive cognitive health report
+            </p>
+
+            <div class="progress-indicator">
+                {% widthratio status.completed_count 6 100 as progress_percent %}
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ progress_percent }}%"></div>
+                </div>
+                <p class="progress-text">
+                    {{ status.completed_count }} of 6 tests completed
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Cards -->
+    <div class="test-cards-container">
+
+        <!-- Cognitive Test -->
+        <div class="test-card {% if status.memory_done %}completed{% endif %}">
+            <div class="test-card-header">
+                <div class="test-icon memory-icon">🧩</div>
+                <div class="status-badge {% if status.memory_done %}badge-completed{% else %}badge-pending{% endif %}">
+                    {% if status.memory_done %}
+                        <span class="badge-icon">✓</span> Completed
+                    {% else %}
+                        <span class="badge-icon">⏳</span> Pending
+                    {% endif %}
+                </div>
+            </div>
+
+            <h3 class="test-title">Cognitive Test</h3>
+            <p class="test-description">
+                Evaluate memory, recall, and cognitive processing abilities
+            </p>
+
+            <div class="test-details">
+                <span>⏱️ 2 min</span>
+                <span>📊 Pattern Recognition</span>
+            </div>
+
+            <a href="/memory-test/" class="btn btn-primary">
+                {% if status.memory_done %}
+                    🔄 Retake Test
+                {% else %}
+                    ▶️ Start Test
+                {% endif %}
+            </a>
+        </div>
+
+        <!-- Attention Test -->
+        <div class="test-card {% if status.attention_done %}completed{% endif %}">
+            <div class="test-card-header">
+                <div class="test-icon attention-icon">⚡</div>
+                <div class="status-badge {% if status.attention_done %}badge-completed{% else %}badge-pending{% endif %}">
+                    {% if status.attention_done %}
+                        <span class="badge-icon">✓</span> Completed
+                    {% else %}
+                        <span class="badge-icon">⏳</span> Pending
+                    {% endif %}
+                </div>
+            </div>
+
+            <h3 class="test-title">Attention & Reaction</h3>
+            <p class="test-description">
+                Measure focus, concentration, and response time
+            </p>
+
+            <div class="test-details">
+                <span>⏱️ 30 sec</span>
+                <span>🎯 Reaction Speed</span>
+            </div>
+
+            <a href="/attention-test/" class="btn btn-primary">
+                {% if status.attention_done %}
+                    🔄 Retake Test
+                {% else %}
+                    ▶️ Start Test
+                {% endif %}
+            </a>
+        </div>
+
+        <!-- Voice Test -->
+        <div class="test-card {% if status.voice_done %}completed{% endif %}">
+            <div class="test-card-header">
+                <div class="test-icon voice-icon">🎤</div>
+                <div class="status-badge {% if status.voice_done %}badge-completed{% else %}badge-pending{% endif %}">
+                    {% if status.voice_done %}
+                        <span class="badge-icon">✓</span> Completed
+                    {% else %}
+                        <span class="badge-icon">⏳</span> Pending
+                    {% endif %}
+                </div>
+            </div>
+
+            <h3 class="test-title">Voice Analysis</h3>
+            <p class="test-description">
+                Assess speech patterns and verbal communication
+            </p>
+
+            <div class="test-details">
+                <span>⏱️ 2 min</span>
+                <span>🗣️ Speech Test</span>
+            </div>
+
+            <a href="/voice-test/" class="btn btn-primary">
+                {% if status.voice_done %}
+                    🔄 Retake Test
+                {% else %}
+                    ▶️ Start Test
+                {% endif %}
+            </a>
+        </div>
+
+        <!-- Questionnaire -->
+        <div class="test-card {% if status.questionnaire_done %}completed{% endif %}">
+            <div class="test-card-header">
+                <div class="test-icon questionnaire-icon">📋</div>
+                <div class="status-badge {% if status.questionnaire_done %}badge-completed{% else %}badge-pending{% endif %}">
+                    {% if status.questionnaire_done %}
+                        <span class="badge-icon">✓</span> Completed
+                    {% else %}
+                        <span class="badge-icon">⏳</span> Pending
+                    {% endif %}
+                </div>
+            </div>
+
+            <h3 class="test-title">Health Questionnaire</h3>
+            <p class="test-description">
+                Medical history and lifestyle assessment
+            </p>
+
+            <div class="test-details">
+                <span>⏱️ 5 min</span>
+                <span>📝 10 Questions</span>
+            </div>
+
+            <a href="/questions/" class="btn btn-primary">
+                {% if status.questionnaire_done %}
+                    🔄 Retake Test
+                {% else %}
+                    ▶️ Start Test
+                {% endif %}
+            </a>
+        </div>
+
+        <!-- Trail Making Test -->
+        <div class="test-card {% if status.trail_done %}completed{% endif %}">
+            <div class="test-card-header">
+                <div class="test-icon trail-icon">📝</div>
+                <div class="status-badge {% if status.trail_done %}badge-completed{% else %}badge-pending{% endif %}">
+                    {% if status.trail_done %}
+                        <span class="badge-icon">✓</span> Completed
+                    {% else %}
+                        <span class="badge-icon">⏳</span> Pending
+                    {% endif %}
+                </div>
+            </div>
+
+            <h3 class="test-title">Trail Making Test</h3>
+            <p class="test-description">
+                Assess visual attention and task-switching ability
+            </p>
+
+            <div class="test-details">
+                <span>⏱️ 3 min</span>
+                <span>🔗 Sequence & Trails</span>
+            </div>
+
+            <a href="/trail-test/" class="btn btn-primary">
+                {% if status.trail_done %}
+                    🔄 Retake Test
+                {% else %}
+                    ▶️ Start Test
+                {% endif %}
+            </a>
+        </div>
+
+        <!-- Digit Span Test -->
+        <div class="test-card {% if status.digit_span_done %}completed{% endif %}">
+            <div class="test-card-header">
+                <div class="test-icon digit-span-icon">🔢</div>
+                <div class="status-badge {% if status.digit_span_done %}badge-completed{% else %}badge-pending{% endif %}">
+                    {% if status.digit_span_done %}
+                        <span class="badge-icon">✓</span> Completed
+                    {% else %}
+                        <span class="badge-icon">⏳</span> Pending
+                    {% endif %}
+                </div>
+            </div>
+
+            <h3 class="test-title">Digit Span Test</h3>
+            <p class="test-description">
+                Evaluate short-term memory and working memory capacity
+            </p>
+
+            <div class="test-details">
+                <span>⏱️ 2 min</span>
+                <span>🔢 Number Recall</span>
+            </div>
+
+            <a href="/digit-span-test/" class="btn btn-primary">
+                {% if status.digit_span_done %}
+                    🔄 Retake Test
+                {% else %}
+                    ▶️ Start Test
+                {% endif %}
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Results Section -->
+    <div class="result-section">
+        <div class="result-content">
+            <div class="result-icon">📊</div>
+            <h2>Assessment Results</h2>
+
+            {% if status.all_completed %}
+            <p class="result-description success">
+                All tests completed successfully.
+            </p>
+
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 16px;">
+                    <a href="{% url 'final_result' %}" class="btn btn-success">
+                        📈 View Final Results
+                    </a>
+
+                    <a href="{% url 'reset_tests' %}" class="btn btn-danger">
+                        🔄 Clear & Start New Assessment
+                    </a>
+                </div>
+            {% else %}
+
+                <p class="result-description pending">
+                    Complete all remaining tests to unlock results.
+                </p>
+                <button class="btn btn-disabled" disabled>🔒 Results Locked</button>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

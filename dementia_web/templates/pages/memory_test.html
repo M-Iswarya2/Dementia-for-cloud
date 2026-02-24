@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Memory Test{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/memorytest.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="memorytest-container">
+    <div class="memorytest-card">
+        <h2>Memorize these words</h2>
+        <div class="step-text">
+            Step <span id="current-step">1</span> of 4
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p class="instruction-text">
+            Round <span id="round">1</span> of 2 - Study these words carefully
+        </p>
+        <div class="words-area">
+            <div id="loading-message">
+                <div class="spinner-small"></div>
+                <p>Loading words...</p>
+            </div>
+            <div id="words-grid" class="words-grid" style="display: none;"></div>
+        </div>
+        <button id="btn" class="memorized-btn" disabled>I've memorized them</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const params = new URLSearchParams(window.location.search);
+const isNewTest = params.get("new") === "true";
+if (isNewTest) {
+    sessionStorage.removeItem("memoryTestSession");
+}
+
+let memorySession = JSON.parse(sessionStorage.getItem("memoryTestSession"));
+
+
+// DOM
+const btn = document.getElementById("btn");
+const grid = document.getElementById("words-grid");
+const loading = document.getElementById("loading-message");
+const roundEl = document.getElementById("round");
+const stepEl = document.getElementById("current-step");
+const progressFill = document.getElementById("progress-fill");
+
+async function startRound() {
+    if (!memorySession) {
+        // First round — start session from Flask
+        try {
+            const res = await fetch("http://127.0.0.1:5000/memory/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await res.json();
+
+            memorySession = {
+                sessionId: data.session_id,
+                currentRound: 1,
+                memorizeWords: data.memorize_words,
+                options: data.options
+            };
+
+            sessionStorage.setItem("memoryTestSession", JSON.stringify(memorySession));
+
+        } catch (err) {
+            console.error(err);
+            loading.innerHTML = "<p style='color:red'>Server error</p>";
+            return;
+        }
+    }
+
+    // Use existing session for current round
+    const round = memorySession.currentRound;
+
+    roundEl.textContent = round;
+    stepEl.textContent = round === 1 ? "1" : "3";
+    progressFill.style.width = round === 1 ? "25%" : "75%";
+
+    loading.style.display = "none";
+    grid.style.display = "grid";
+    btn.disabled = false;
+
+    grid.innerHTML = memorySession.memorizeWords
+        .map(w => `<div class="word-box">${w}</div>`)
+        .join("");
+}
+
+btn.onclick = () => {
+    window.location.href = "{% url 'memory_select' %}";
+};
+
+startRound();
+</script>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+:root {
+  --primary: #2563eb;
+  --bg: #e5e5e5;
+  --card: #f8fafc;
+  --text: #0f172a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--text);
+}
+
+/* Apply gradient background to all pages EXCEPT results page */
+body:not(.results-page) {
+  background: linear-gradient(135deg, #ede9fe, #eef2ff, #fdf4ff);
+}
+
+/* Generic center class for small cards/pages */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+/* Card styling */
+.card {
+  background: var(--card);
+  padding: 40px;
+  border-radius: 16px;
+  max-width: 520px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.card span {
+  color: var(--primary);
+}
+
+/* Button */
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  background: var(--primary);
+  color: white;
+  padding: 12px 22px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+/* Info boxes */
+.info-box {
+  background: #eef2ff;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.word-chip {
+  border: 1px solid #c7d2fe;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.voice-box {
+  height: 150px;
+  border: 2px dashed #94a3b8;
+  border-radius: 12px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #64748b;
+}
+
+.result-good {
+  color: green;
+  margin: 10px 0;
+}
+
+.suggestions {
+  background: #f1f5f9;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+}
+
+.dash-box {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+}

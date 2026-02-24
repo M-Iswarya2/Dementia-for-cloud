@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Memory Test - Selection{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/memorytest.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="memorytest-container">
+    <div class="memorytest-card">
+        <h2>Select the words you memorized</h2>
+        
+        <div class="step-text">
+            Step <span id="current-step">2</span> of 4
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        
+        <p class="instruction-text">
+            Round <span id="round">1</span> of 2 - Click the words you memorized
+        </p>
+        
+        <div class="words-area">
+            <div id="loading-message">
+                <div class="spinner-small"></div>
+                <p>Loading options...</p>
+            </div>
+            <div id="words-grid" class="words-grid" style="display: none;"></div>
+        </div>
+        
+        <button id="submitBtn" class="memorized-btn" disabled>Submit Selection</button>
+    </div>
+</div>
+
+<script>
+// Load session
+const session = JSON.parse(sessionStorage.getItem("memoryTestSession"));
+if (!session) {
+    alert("No memory test session found. Redirecting to start...");
+    window.location.href = "{% url 'memory_test' %}?new=true";
+}
+
+// Initialize UI
+const grid = document.getElementById("words-grid");
+const loading = document.getElementById("loading-message");
+const submitBtn = document.getElementById("submitBtn");
+
+document.getElementById("round").textContent = session.currentRound;
+document.getElementById("current-step").textContent = (session.currentRound === 1 ? 2 : 4);
+document.getElementById("progress-fill").style.width = (session.currentRound === 1 ? "50%" : "100%");
+
+// Populate options grid
+grid.innerHTML = session.options
+    .map(word => `<div class="word-box">${word}</div>`)
+    .join("");
+
+loading.remove();
+
+grid.style.display = "grid";
+submitBtn.disabled = false;
+
+// Word selection logic
+grid.querySelectorAll(".word-box").forEach(box => {
+    box.addEventListener("click", () => {
+        box.classList.toggle("selected");
+    });
+});
+
+// Submit round
+submitBtn.onclick = async () => {
+    submitBtn.disabled = true;
+
+    const selectedWords = [...document.querySelectorAll(".word-box.selected")]
+        .map(el => el.textContent);
+
+    try {
+        const res = await fetch("http://127.0.0.1:5000/memory/submit", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                session_id: session.sessionId,
+                selected_words: selectedWords
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.next_round) {
+            // ➡️ Round 2 memorization
+            session.currentRound += 1;
+            session.memorizeWords = data.memorize_words;
+            session.options = data.options;
+            sessionStorage.setItem("memoryTestSession", JSON.stringify(session));
+            window.location.href = "{% url 'memory_test' %}";
+        } else {
+            // ✅ Memory test complete — send to Django backend
+            const memoryScore = data.memory_score;
+            sessionStorage.setItem("memoryScore", memoryScore);
+
+            const csrfToken = "{{ csrf_token }}";
+
+            await fetch("{% url 'submit_memory_score' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ score: memoryScore })
+        });
+
+
+            // Clear session storage
+            sessionStorage.removeItem("memoryTestSession");
+
+            // Redirect to Take Test hub
+            window.location.href = "{% url 'take_test' %}";
+        }
+
+    } catch (err) {
+        alert("Submission failed");
+        submitBtn.disabled = false;
+        console.error(err);
+    }
+};
+
+
+</script>
+{% endblock %}

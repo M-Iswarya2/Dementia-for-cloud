@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Attention & Reaction Test{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/attention_test.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="attention-test-container">
+    <h1>Attention & Reaction Test</h1>
+    <p>Click the button ONLY when you see 🔵</p>
+
+    <button id="startBtn">Start Test</button>
+
+    <div id="game" class="hidden">
+        <div id="stimulus" class="stimulus">+</div>
+        <button id="clickBtn">CLICK 🔵</button>
+        <p class="trial-info">Trial <span id="currentTrial">0</span> / <span id="totalTrials">0</span></p>
+    </div>
+
+    <div id="loading" class="hidden">
+        <p>Submitting results...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    let sessionId = null;
+    let sequence = [];
+    let currentIndex = -1;
+    let stimulusStart = 0;
+    let responses = [];
+    let intervalId = null;
+
+    const stimulusEl = document.getElementById("stimulus");
+    const startBtn = document.getElementById("startBtn");
+    const gameDiv = document.getElementById("game");
+    const clickBtn = document.getElementById("clickBtn");
+    const loadingDiv = document.getElementById("loading");
+
+    // --- Start Test ---
+    startBtn.onclick = async () => {
+        startBtn.disabled = true;
+        startBtn.textContent = "Loading...";
+
+        try {
+            const res = await fetch("http://127.0.0.1:5000/attention/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await res.json();
+
+            if (!data.session_id || !data.sequence) throw new Error("Invalid response from server");
+
+            sessionId = data.session_id;
+            sequence = data.sequence;
+            document.getElementById("totalTrials").textContent = data.total_trials;
+
+            startBtn.classList.add("hidden");
+            gameDiv.classList.remove("hidden");
+
+            setTimeout(runSequence, 2000);
+
+        } catch (error) {
+            console.error("Error starting test:", error);
+            alert("Error starting test. Please make sure the Flask server is running.");
+            startBtn.disabled = false;
+            startBtn.textContent = "Start Test";
+        }
+    };
+
+    // --- Click Handler ---
+    clickBtn.onclick = () => {
+        if (currentIndex < 0 || currentIndex >= sequence.length) return;
+
+        const reactionTime = (performance.now() - stimulusStart) / 1000;
+
+        // Only record valid clicks on 🔵
+        if (sequence[currentIndex] === "🔵") {
+            responses.push({
+                index: currentIndex,
+                reaction_time: Number(reactionTime.toFixed(3))
+            });
+        }
+
+        // Visual feedback
+        clickBtn.style.backgroundColor = "#4CAF50";
+        setTimeout(() => { clickBtn.style.backgroundColor = ""; }, 200);
+    };
+
+    // --- Run Stimulus Sequence ---
+    function runSequence() {
+        intervalId = setInterval(() => {
+            currentIndex++;
+
+            if (currentIndex >= sequence.length) {
+                clearInterval(intervalId);
+                stimulusEl.innerText = "Test Complete!";
+                clickBtn.disabled = true;
+                submitResults();
+                return;
+            }
+
+            document.getElementById("currentTrial").textContent = currentIndex + 1;
+            stimulusEl.innerText = sequence[currentIndex];
+            stimulusStart = performance.now();
+        }, 1200);
+    }
+
+    // --- Submit Results ---
+    async function submitResults() {
+        gameDiv.classList.add("hidden");
+        loadingDiv.classList.remove("hidden");
+
+        console.log("Submitting responses:", responses);
+
+        try {
+            const res = await fetch("http://127.0.0.1:5000/attention/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    responses: responses  // ✅ send array of objects
+                })
+            });
+
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || "Unknown error");
+
+            console.log("Attention test results:", data);
+            sessionStorage.setItem("attentionScore", data.attention_score);
+
+            // 🔔 Notify Django that Attention Test is completed
+            await fetch("{% url 'submit_attention_score' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    score: data.attention_score
+                })
+            });
+
+           // 🔥 SAVE ATTENTION STATUS IN DJANGO
+            await fetch("{% url 'submit_attention_score' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    score: data.attention_score || 0
+                })
+            });
+
+            setTimeout(() => {
+                window.location.href = "{% url 'take_test' %}";
+            }, 800);
+
+
+
+        } catch (error) {
+            console.error("Error submitting results:", error);
+            loadingDiv.innerHTML = "<p style='color: red;'>Error submitting results. Please try again.</p>";
+        }
+    }
+
+});
+</script>
+{% endblock %}

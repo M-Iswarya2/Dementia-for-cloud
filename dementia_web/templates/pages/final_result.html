@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Assessment Results - DementiaAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/results.css' %}">
+<style>
+    /* Circular progress styles */
+    .circular-progress {
+        position: relative;
+        width: 120px;
+        height: 120px;
+    }
+
+    .circular-progress svg {
+        transform: rotate(-90deg);
+    }
+
+    .progress-bg {
+        fill: none;
+        stroke: #eee;
+        stroke-width: 12;
+    }
+
+    .progress-fill {
+        fill: none;
+        stroke: #6c5ce7;
+        stroke-width: 12;
+        stroke-linecap: round;
+        stroke-dasharray: 339.292 339.292; /* circumference = 2 * pi * 54 */
+        stroke-dashoffset: 339.292;
+        transition: stroke-dashoffset 1s ease-out;
+    }
+
+    .score-value {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .results-container {
+        padding: 2rem;
+    }
+
+    .results-card {
+        max-width: 900px;
+        margin: auto;
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .results-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .checkmark-icon svg {
+        color: #6c5ce7;
+    }
+
+    .scores-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+    }
+
+    .score-card {
+        width: 150px;
+        text-align: center;
+    }
+
+    .risk-level-section {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .action-buttons {
+        text-align: center;
+        margin-top: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    <div class="results-card">
+
+        <div class="results-header">
+            <div class="checkmark-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h1>Assessment Complete</h1>
+            <p class="subtitle">Your Cognitive Health Analysis</p>
+        </div>
+
+        <div id="results-content">
+
+            <!-- Risk Level -->
+            <div class="risk-level-section">
+                <h2>Risk Level</h2>
+                <div class="risk-badge-container">
+                    <span class="risk-label" style="font-size: 1.2rem; font-weight: bold;">{{ risk }}</span>
+                </div>
+                <p class="overall-score">Overall Score: <strong>{{ final_score }}%</strong></p>
+            </div>
+
+            <!-- Individual Scores -->
+            <div class="scores-section">
+                <h3 style="text-align: center;">Individual Test Scores</h3>
+                <div class="scores-grid">
+
+                    <!-- Memory -->
+                    <div class="score-card">
+                        <h4>Memory</h4>
+                        <div class="circular-progress">
+                            <svg width="120" height="120">
+                                <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                                <circle cx="60" cy="60" r="54" class="progress-fill" id="memory-circle"></circle>
+                            </svg>
+                            <div class="score-value">{{ memory_pct }}%</div>
+                        </div>
+                    </div>
+
+                    <!-- Attention -->
+                    <div class="score-card">
+                        <h4>Attention</h4>
+                        <div class="circular-progress">
+                            <svg width="120" height="120">
+                                <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                                <circle cx="60" cy="60" r="54" class="progress-fill" id="attention-circle"></circle>
+                            </svg>
+                            <div class="score-value">{{ attention_pct }}%</div>
+                        </div>
+                    </div>
+
+                    <!-- Digit Span -->
+                    <div class="score-card">
+                        <h4>Digit Span</h4>
+                        <div class="circular-progress">
+                            <svg width="120" height="120">
+                                <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                                <circle cx="60" cy="60" r="54" class="progress-fill" id="digit-span-circle"></circle>
+                            </svg>
+                            <div class="score-value">{{ digit_span_pct }}%</div>
+                        </div>
+                    </div>
+
+                    <!-- Trail B -->
+                    <div class="score-card">
+                        <h4>Trail Making B</h4>
+                        <div class="circular-progress">
+                            <svg width="120" height="120">
+                                <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                                <circle cx="60" cy="60" r="54" class="progress-fill" id="trail-b-circle"></circle>
+                            </svg>
+                            <div class="score-value">{{ trail_b_pct }}%</div>
+                        </div>
+                    </div>
+
+                    <!-- Voice -->
+                    <div class="score-card">
+                        <h4>Voice Analysis</h4>
+                        <div class="circular-progress">
+                            <svg width="120" height="120">
+                                <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                                <circle cx="60" cy="60" r="54" class="progress-fill" id="voice-circle"></circle>
+                            </svg>
+                            <div class="score-value">{{ voice_pct }}%</div>
+                        </div>
+                    </div>
+
+                    <!-- Questionnaire -->
+                    <div class="score-card">
+                        <h4>Questionnaire</h4>
+                        <div class="circular-progress">
+                            <svg width="120" height="120">
+                                <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                                <circle cx="60" cy="60" r="54" class="progress-fill" id="questionnaire-circle"></circle>
+                            </svg>
+                            <div class="score-value">{{ questionnaire_pct }}%</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">View Dashboard</a>
+                <button onclick="window.print()" class="btn btn-secondary">Download Report</button>
+                <a href="{% url 'take_test' %}" class="btn btn-outline">Take Another Test</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script id="score-data" type="application/json">
+{
+    "memory": {{ memory_pct }},
+    "attention": {{ attention_pct }},
+    "digit_span": {{ digit_span_pct }},
+    "trail_b": {{ trail_b_pct }},
+    "voice": {{ voice_pct }},
+    "questionnaire": {{ questionnaire_pct }}
+}
+</script>
+
+<script>
+    function animateCircle(circleId, percentage) {
+        const circle = document.getElementById(circleId);
+        if (!circle) { return; }
+
+        const radius = 54;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (percentage / 100) * circumference;
+
+        circle.style.strokeDasharray = circumference + ' ' + circumference;
+        circle.style.strokeDashoffset = circumference;
+
+        setTimeout(function () {
+            circle.style.strokeDashoffset = offset;
+        }, 200);
+    }
+
+    const scores = JSON.parse(document.getElementById('score-data').textContent);
+
+    animateCircle('memory-circle',        scores.memory);
+    animateCircle('attention-circle',     scores.attention);
+    animateCircle('digit-span-circle',    scores.digit_span);
+    animateCircle('trail-b-circle',       scores.trail_b);
+    animateCircle('voice-circle',         scores.voice);
+    animateCircle('questionnaire-circle', scores.questionnaire);
+</script>
+{% endblock %}

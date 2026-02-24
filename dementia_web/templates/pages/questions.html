@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Questionnaire - DementiaAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/questions.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="questions-container">
+    <div class="questions-card">
+        <h2>Answer These Questions</h2>
+        <p class="questions-subtitle">
+            Please answer honestly for accurate assessment
+        </p>
+
+        <form id="questionnaire-form">
+            {% csrf_token %}
+
+            {% for i in "12345678910"|make_list %}
+            {% endfor %}
+
+            <!-- QUESTION 1 -->
+            <div class="question-group">
+                <p class="question-text">1. How often do you forget where you placed items?</p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q1" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q1" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q1" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q1" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 2 -->
+            <div class="question-group">
+                <p class="question-text">2. Do you have difficulty remembering recent conversations?</p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q2" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q2" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q2" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q2" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 3 -->
+            <div class="question-group">
+                <p class="question-text">3. How often do you forget appointments or important dates?</p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q3" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q3" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q3" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q3" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 4 -->
+            <div class="question-group">
+                <p class="question-text">
+                    4. Do you find it challenging to follow a familiar recipe or handle monthly bills?
+                </p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q4" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q4" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q4" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q4" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 5 -->
+            <div class="question-group">
+                <p class="question-text">
+                    5. How often do you have trouble finding the right words during conversation?
+                </p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q5" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q5" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q5" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q5" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 6 -->
+            <div class="question-group">
+                <p class="question-text">6. Do you get confused about the day or date?</p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q6" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q6" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q6" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q6" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 7 -->
+            <div class="question-group">
+                <p class="question-text">7. Do you struggle to concentrate on tasks?</p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q7" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q7" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q7" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q7" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 8 -->
+            <div class="question-group">
+                <p class="question-text">8. Do you repeat questions in the same conversation?</p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q8" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q8" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q8" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q8" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 9 -->
+            <div class="question-group">
+                <p class="question-text">9. Do you feel disoriented in familiar places?</p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q9" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q9" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q9" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q9" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <!-- QUESTION 10 -->
+            <div class="question-group">
+                <p class="question-text">10. Do you find decision-making harder than before?</p>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="q10" value="1" required><span>Never</span></label>
+                    <label class="radio-label"><input type="radio" name="q10" value="2"><span>Rarely</span></label>
+                    <label class="radio-label"><input type="radio" name="q10" value="3"><span>Sometimes</span></label>
+                    <label class="radio-label"><input type="radio" name="q10" value="4"><span>Often</span></label>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Questionnaire</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('questionnaire-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const answers = {};
+
+    for (let [key, value] of formData.entries()) {
+        if (key !== 'csrfmiddlewaretoken') {
+            answers[key] = parseInt(value);
+        }
+    }
+
+    fetch("{% url 'submit_questionnaire_score' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ answers: answers })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "{% url 'take_test' %}";
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(() => alert("Network error occurred."));
+});
+</script>
+{% endblock %}

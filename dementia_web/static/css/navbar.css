@@ -1,0 +1,129 @@
+.navbar {
+  background: white;
+  padding: 18px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 22px;
+  margin-right: 24px;
+  color: #7c3aed;
+  letter-spacing: -0.5px;
+}
+
+.nav-left a {
+  text-decoration: none;
+  color: #334155;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+
+.nav-left a:hover {
+  color: #7c3aed;
+}
+
+.nav-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.login-btn {
+  border: none;
+  padding: 12px 24px;
+  color: white;
+  background: #7c3aed;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-btn:hover {
+  background: #6d28d9;
+}
+
+.screen-btn {
+  background: #1e293b;
+  color: white;
+  padding: 12px 28px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen-btn:hover {
+  background: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(30, 41, 59, 0.4);
+}
+
+/* RESPONSIVE */
+@media screen and (max-width: 968px) {
+  .navbar {
+    padding: 14px 24px;
+  }
+  
+  .nav-left {
+    gap: 20px;
+  }
+  
+  .logo {
+    font-size: 20px;
+    margin-right: 16px;
+  }
+  
+  .nav-left a {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 12px 16px;
+  }
+  
+  .nav-left {
+    gap: 12px;
+  }
+  
+  .nav-left a:not(:first-child) {
+    display: none;
+  }
+  
+  .login-btn {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  .screen-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}

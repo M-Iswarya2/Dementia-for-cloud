@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About DementiaAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <!-- HERO SECTION -->
+    <section class="about-hero">
+        <h1>About DementiaAI</h1>
+        <p class="about-subtitle">
+            Pioneering AI-powered early detection for cognitive health
+        </p>
+    </section>
+
+    <!-- MISSION SECTION -->
+    <section class="about-section mission-section">
+        <div class="content-wrapper">
+            <h2>Our Mission</h2>
+            <p>
+                DementiaAI is dedicated to revolutionizing early dementia detection through 
+                cutting-edge artificial intelligence and accessible screening tools. We believe 
+                that early detection can significantly improve outcomes and quality of life for 
+                individuals at risk of cognitive decline.
+            </p>
+            <p>
+                Our mission is to make cognitive health screening as simple and routine as 
+                checking your blood pressure, empowering individuals and healthcare providers 
+                with actionable insights for proactive care.
+            </p>
+        </div>
+    </section>
+
+    <!-- WHO WE SERVE -->
+    <section class="about-section audience-section">
+        <div class="content-wrapper">
+            <h2>Who We Serve</h2>
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <h3>Individuals & Families</h3>
+                    <p>
+                        Monitor cognitive health from home with easy-to-use screening tools. 
+                        Perfect for those concerned about memory changes or family history of dementia.
+                    </p>
+                </div>
+                <div class="audience-card">
+                    <h3>Healthcare Providers</h3>
+                    <p>
+                        Enhance patient care with AI-assisted screening. Our tools complement 
+                        clinical assessments and help identify at-risk patients earlier.
+                    </p>
+                </div>
+                <div class="audience-card">
+                    <h3>Researchers</h3>
+                    <p>
+                        Access large-scale cognitive health data for studies. Partner with us 
+                        to advance dementia research and develop better interventions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

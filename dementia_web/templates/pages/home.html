@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}DementiaAI - Early Dementia Detection{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Detect Early Signs of
+            </h1>
+            <h1 class="hero-title-highlight">
+                Dementia Using AI
+            </h1>
+            <p class="hero-description">
+                Clinical-grade cognitive screening from the comfort of your home. 
+                Our ethical AI analyzes voice patterns and memory tasks to identify 
+                early risk markers.
+            </p>
+            <a href="{% url 'take_test' %}" class="primary-btn">
+    Start Free Screening →
+</a>
+
+        </div>
+    </section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="section how-it-works">
+    <h2>How the Assessment Works</h2>
+    <p class="section-subtitle">
+        Complete cognitive and voice-based assessments in any order. 
+        Once finished, our AI combines your results to generate a 
+        personalized dementia risk analysis.
+    </p>
+    
+    <div class="steps-grid">
+
+        <div class="step-card">
+            <div class="step-icon step-icon-1">🧠</div>
+            <h3>1. Cognitive Tests</h3>
+            <p>
+                Perform memory, attention, executive function, and 
+                problem-solving tasks designed for early detection.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-icon step-icon-2">🎙️</div>
+            <h3>2. Voice Assessment</h3>
+            <p>
+                Describe an image for 30 seconds. Our AI analyzes speech 
+                fluency, pauses, and linguistic complexity.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-icon step-icon-3">📊</div>
+            <h3>3. Flexible Completion</h3>
+            <p>
+                Take assessments in any order. Your scores are securely 
+                saved and updated in real-time.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-icon step-icon-4">🤖</div>
+            <h3>4. AI Risk Report</h3>
+            <p>
+                Our AI combines all completed tests to generate a 
+                final cognitive score and risk classification.
+            </p>
+        </div>
+
+    </div>
+
+    <a href="{% url 'take_test' %}" class="cta-button">
+        Begin Assessment
+    </a>
+</section>
+</div>
+{% endblock %}

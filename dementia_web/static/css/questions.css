@@ -1,0 +1,195 @@
+/* Questions Container */
+.questions-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+/* Questions Card */
+.questions-card {
+  background: white;
+  border-radius: 24px;
+  padding: 48px;
+  max-width: 900px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.questions-card h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+.questions-subtitle {
+  font-size: 16px;
+  color: #64748b;
+  text-align: center;
+  margin: 0 0 40px 0;
+}
+
+/* Question Form */
+#questionnaire-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Question Group */
+.question-group {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 24px;
+  border-left: 4px solid #3b82f6;
+}
+
+.question-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+/* Radio Group */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.radio-label:hover {
+  border-color: #3b82f6;
+  background: #f0f7ff;
+}
+
+.radio-label input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.radio-label span {
+  font-size: 15px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Checked state */
+.radio-label:has(input[type="radio"]:checked) {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.radio-label:has(input[type="radio"]:checked) span {
+  color: #1e40af;
+  font-weight: 600;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  max-width: 300px;
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  color: white;
+  padding: 16px 32px;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+  margin: 20px auto 0 auto;
+  display: block;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .questions-card {
+    padding: 32px 24px;
+  }
+
+  .questions-card h2 {
+    font-size: 26px;
+  }
+
+  .questions-subtitle {
+    font-size: 15px;
+  }
+
+  .question-group {
+    padding: 20px;
+  }
+
+  .question-text {
+    font-size: 16px;
+  }
+
+  .radio-label {
+    padding: 10px 14px;
+  }
+
+  .radio-label span {
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    font-size: 16px;
+    padding: 14px 28px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .questions-container {
+    padding: 20px 16px;
+  }
+
+  .questions-card {
+    padding: 24px 20px;
+  }
+
+  .questions-card h2 {
+    font-size: 22px;
+  }
+
+  .question-group {
+    padding: 16px;
+  }
+
+  .question-text {
+    font-size: 15px;
+  }
+
+  #questionnaire-form {
+    gap: 24px;
+  }
+}

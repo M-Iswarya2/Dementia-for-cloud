@@ -1,0 +1,288 @@
+/* PAGE WRAPPER */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+}
+
+/* ABOUT CONTAINER */
+.about-container {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* HERO SECTION */
+.about-hero {
+  padding: 120px 20px 80px;
+  text-align: center;
+  background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.1), transparent 70%);
+}
+
+.about-hero h1 {
+  font-size: 56px;
+  font-weight: 700;
+  color: #7c3aed;
+  margin-bottom: 16px;
+}
+
+.about-subtitle {
+  font-size: 22px;
+  color: #64748b;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* CONTENT WRAPPER */
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ABOUT SECTIONS */
+.about-section {
+  padding: 80px 20px;
+}
+
+.about-section h2 {
+  font-size: 42px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.about-section p {
+  font-size: 18px;
+  color: #475569;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+/* MISSION SECTION */
+.mission-section {
+  background: white;
+}
+
+.mission-section p {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* TECHNOLOGY SECTION */
+.technology-section {
+  background: #f8fafc;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.tech-card {
+  background: white;
+  padding: 40px 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.15);
+  border-color: #7c3aed;
+}
+
+.tech-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.tech-card h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.tech-card p {
+  font-size: 16px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+  text-align: left;
+}
+
+/* RESEARCH SECTION */
+.research-section {
+  background: white;
+  text-align: center;
+}
+
+.research-section p {
+  max-width: 900px;
+  margin: 0 auto 48px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.stat-card {
+  padding: 32px 20px;
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  border-radius: 16px;
+  color: white;
+}
+
+.stat-card h3 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stat-card p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+/* AUDIENCE SECTION */
+.audience-section {
+  background: #f8fafc;
+}
+
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.audience-card {
+  background: white;
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+}
+
+.audience-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.audience-card h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #7c3aed;
+  margin-bottom: 16px;
+}
+
+.audience-card p {
+  font-size: 16px;
+  color: #64748b;
+  line-height: 1.7;
+  margin: 0;
+  text-align: left;
+}
+
+/* CTA SECTION */
+.about-cta {
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  color: white;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.about-cta h2 {
+  font-size: 42px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.about-cta p {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 700px;
+  margin: 0 auto 40px;
+}
+
+.cta-button {
+  display: inline-block;
+  background: white;
+  color: #7c3aed;
+  padding: 18px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  background: #f8fafc;
+}
+
+/* RESPONSIVE */
+@media screen and (max-width: 767px) {
+  .about-hero {
+    padding: 80px 20px 60px;
+  }
+
+  .about-hero h1 {
+    font-size: 38px;
+  }
+
+  .about-subtitle {
+    font-size: 18px;
+  }
+
+  .about-section {
+    padding: 60px 20px;
+  }
+
+  .about-section h2 {
+    font-size: 32px;
+  }
+
+  .about-section p {
+    font-size: 16px;
+  }
+
+  .tech-grid,
+  .audience-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-cta h2 {
+    font-size: 32px;
+  }
+}

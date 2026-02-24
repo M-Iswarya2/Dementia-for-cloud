@@ -1,0 +1,54 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Flask instance folder and database
+instance/
+*.db
+*.sqlite3
+
+# macOS / Windows system files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Python environment variables
+.env
+
+# Logs and other temp files
+*.log
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
+
+# Django
+db.sqlite3
+uploads/
+media/
+staticfiles/
+
+# ML
+models/
+dataset/
+*.h5
+*.pt
+*.pkl
+*.joblib
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+mfcc_dataset.csv
