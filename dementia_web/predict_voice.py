@@ -67,7 +67,13 @@ MAX_LEN = 300
 MODEL_PATH = "models/dementia_cnn_bilstm_gem.h5"
 
 # Load the model once
-model = load_model(MODEL_PATH)
+model = None
+def get_model():
+    global model
+    if model is None:
+        print("Loading ML model...")
+        model = load_model(MODEL_PATH)
+    return model
 
 def extract_mfcc_live(file_path):
     # 1. Load (Force Mono and 16kHz)
@@ -109,7 +115,8 @@ def predict_voice(file_path):
     X = features[np.newaxis, ..., np.newaxis]
 
     # Get raw probability
-    prob = model.predict(X, verbose=0)[0][0]
+    model_instance = get_model()
+    prob = model_instance.predict(X, verbose=0)[0][0]
 
     # In your LabelEncoder: 
     # Usually 'dementia' is 0 and 'no_dementia' is 1 (alphabetical)
