@@ -1,12 +1,13 @@
-/* Container */
+/* ---------------- Container ---------------- */
 .attention-test-container {
-    display: block;              /* remove flex */
+    display: block; /* remove flex */
     width: 100%;
-    box-sizing: border-box;         /* small top padding only */
+    box-sizing: border-box;
     margin: 0;
+    padding: 20px;
 }
 
-/* Header */
+/* ---------------- Header ---------------- */
 .attention-test-container h1 {
     font-size: 2.5rem;
     font-weight: 700;
@@ -15,40 +16,38 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    
 }
 
-/* Instruction text */
+/* ---------------- Instruction text ---------------- */
 .attention-test-container > p {
     font-size: 1.2rem;
     color: #475569;
     margin-bottom: 20px;
-    
 }
 
-/* Trial info (fixed top-right) */
-.trial-info {
-    position: fixed;
+/* ---------------- Trial info ---------------- */
+.attention-test-container .trial-info {
+    position: fixed !important;
     top: 20px;
     right: 30px;
     font-size: 1rem;
     color: #475569;
-    z-index: 20;
+    z-index: 60 !important;
 }
 
-/* Stimulus ball (positioned randomly via JS) */
-#stimulus {
-    position: fixed;
+/* ---------------- Stimulus ball ---------------- */
+.attention-test-container #stimulus {
+    position: fixed !important;
     font-size: 3.5rem;
     cursor: pointer;
     user-select: none;
-    z-index: 10;
+    z-index: 50 !important;
     transition: transform 0.1s ease;
     line-height: 1;
 }
 
-/* Start button */
-#startBtn {
+/* ---------------- Start button ---------------- */
+.attention-test-container #startBtn {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
     padding: 18px 50px;
@@ -64,28 +63,28 @@
     margin-top: 10px;
 }
 
-#startBtn:hover {
+.attention-test-container #startBtn:hover {
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
-#startBtn:disabled {
+.attention-test-container #startBtn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
 }
 
-/* Loading */
-#loading p {
+/* ---------------- Loading ---------------- */
+.attention-test-container #loading p {
     font-size: 1.1rem;
     color: #475569;
     text-align: center;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
-/* Fade-in animation for game div */
-#game {
+/* ---------------- Fade-in animation ---------------- */
+.attention-test-container #game {
     animation: fadeIn 0.5s ease;
 }
 
@@ -94,12 +93,12 @@
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Hidden utility */
-.hidden {
+/* ---------------- Hidden utility ---------------- */
+.attention-test-container .hidden {
     display: none !important;
 }
 
-/* Responsive */
+/* ---------------- Responsive ---------------- */
 @media (max-width: 768px) {
     .attention-test-container h1 {
         font-size: 1.8rem;
@@ -108,11 +107,11 @@
         font-size: 1rem;
         padding: 0 16px;
     }
-    #startBtn {
+    .attention-test-container #startBtn {
         padding: 14px 36px;
         font-size: 1rem;
     }
-    #stimulus {
+    .attention-test-container #stimulus {
         font-size: 2.8rem;
     }
 }
@@ -121,11 +120,11 @@
     .attention-test-container h1 {
         font-size: 1.4rem;
     }
-    #startBtn {
+    .attention-test-container #startBtn {
         padding: 12px 28px;
         font-size: 0.9rem;
     }
-    #stimulus {
+    .attention-test-container #stimulus {
         font-size: 2.2rem;
     }
 }
