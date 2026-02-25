@@ -228,7 +228,76 @@ def voice_test(request):
 def questions(request):
     return render(request, "pages/questions.html")
 
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import time
+from .memory_logic import generate_round, evaluate_round
 
+# In-memory session store
+MEMORY_SESSIONS = {}
+
+@csrf_exempt
+def memory_start(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid method"}, status=400)
+    
+    session_id = f"memory_{int(time.time())}"
+    session_data = generate_round(used_words=[])
+    session_data["current_round"] = 1
+    session_data["scores"] = []
+    session_data["used_words"] = []
+
+    MEMORY_SESSIONS[session_id] = session_data
+
+    return JsonResponse({
+        "session_id": session_id,
+        "memorize_words": session_data["memorized_words"],
+        "options": session_data["options"]
+    })
+
+
+@csrf_exempt
+def memory_submit(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid method"}, status=400)
+    
+    data = json.loads(request.body)
+    session_id = data.get("session_id")
+    selected_words = data.get("selected_words", [])
+
+    if not session_id or session_id not in MEMORY_SESSIONS:
+        return JsonResponse({"error": "Invalid session"}, status=400)
+
+    session_data = MEMORY_SESSIONS[session_id]
+
+    result = evaluate_round(
+        selected_words,
+        session_data["correct_choices"],
+        session_data["start_time"]
+    )
+
+    session_data["scores"].append(result["score"])
+    current_round = session_data.get("current_round", 1)
+
+    if current_round < 2:
+        session_data["current_round"] += 1
+        new_round_data = generate_round(used_words=session_data.get("used_words", []))
+        session_data.update(new_round_data)
+
+        return JsonResponse({
+            "memory_score": result["score"],
+            "next_round": True,
+            "round": session_data["current_round"],
+            "memorize_words": new_round_data["memorized_words"],
+            "options": new_round_data["options"]
+        })
+    else:
+        total_score = sum(session_data.get("scores", [])) / 2
+        MEMORY_SESSIONS.pop(session_id, None)
+        return JsonResponse({
+            "memory_score": total_score,
+            "next_round": False
+        })
 # =====================================================
 # ATTENTION TEST LOGIC
 # =====================================================
@@ -253,7 +322,103 @@ def generate_attention_sequence():
         "sequence": sequence,
         "total_trials": TOTAL_TRIALS
     }
+from .attention_logic import generate_attention_sequence, evaluate_attention
 
+
+# In-memory session store for attention test
+ATTENTION_SESSIONS = {}
+
+# ===================== START TEST =====================
+@csrf_exempt
+def attention_start(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid method"}, status=400)
+
+    # Create unique session ID
+    session_id = f"attention_{len(ATTENTION_SESSIONS) + 1}"
+
+    # Generate random sequence and targets (per trial)
+    test_data = generate_attention_sequence()  # now returns "sequence" and "targets"
+
+    # Save session
+    ATTENTION_SESSIONS[session_id] = {
+        "sequence": test_data["sequence"],
+        "targets": test_data["targets"],  # list of target per trial
+        "responses": []
+    }
+
+    # Return session info to frontend
+    return JsonResponse({
+        "session_id": session_id,
+        "sequence": test_data["sequence"],
+        "targets": test_data["targets"],  # <-- send targets array
+        "total_trials": len(test_data["sequence"])
+    })
+
+# ===================== SUBMIT TEST =====================
+@csrf_exempt
+def attention_submit(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid method"}, status=400)
+
+    try:
+        data = json.loads(request.body)
+        session_id = data.get("session_id")
+        responses = data.get("responses", [])
+
+        if session_id not in ATTENTION_SESSIONS:
+            return JsonResponse({"error": "Invalid session"}, status=400)
+
+        session = ATTENTION_SESSIONS[session_id]
+        sequence = session["sequence"]
+        targets = session["targets"]  # <-- list of targets per trial
+
+        # Evaluate responses per trial
+        hits = 0
+        misses = 0
+        false_alarms = 0
+        reaction_times = []
+
+        response_map = {r["index"]: r["reaction_time"] for r in responses}
+
+        for i, stim in enumerate(sequence):
+            target = targets[i]
+            if stim == target:
+                if i in response_map:
+                    hits += 1
+                    reaction_times.append(response_map[i])
+                else:
+                    misses += 1
+            else:
+                if i in response_map:
+                    false_alarms += 1
+
+        avg_rt = round(sum(reaction_times)/len(reaction_times), 3) if reaction_times else 0
+        raw_score = (hits * 2) - false_alarms - misses
+
+        # Normalize score
+        total_targets = sum(1 for t, s in zip(targets, sequence) if t == s)
+        max_score = total_targets * 2
+        normalized_score = max(0, min(1, raw_score / max_score)) if max_score > 0 else 0
+
+        ATTENTION_SESSIONS.pop(session_id, None)
+
+        return JsonResponse({
+            "success": True,
+            "attention_score": round(normalized_score, 2),
+            "details": {
+                "hits": hits,
+                "misses": misses,
+                "false_alarms": false_alarms,
+                "avg_reaction_time": avg_rt,
+                "raw_score": raw_score
+            }
+        })
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 # =====================================================
 # RECEIVE SCORES (AJAX)
@@ -398,7 +563,69 @@ def submit_questionnaire_score(request):
 
     return JsonResponse({"success": True})
 
+# views_voice.py
+import os
+import uuid
+import json
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .predict_voice import predict_voice
 
+# Directory to save uploaded audio files
+AUDIO_UPLOAD = getattr(settings, "AUDIO_UPLOAD", "uploads")
+
+@csrf_exempt
+def analyze_voice(request):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Invalid method"}, status=400)
+    
+    path = None
+
+    try:
+        os.makedirs(AUDIO_UPLOAD, exist_ok=True)
+
+        if "audio" not in request.FILES:
+            return JsonResponse({"success": False, "error": "No audio file provided"}, status=400)
+
+        file = request.FILES["audio"]
+
+        if file.name == "":
+            return JsonResponse({"success": False, "error": "Empty filename"}, status=400)
+
+        # Save file with unique name
+        filename = f"{uuid.uuid4()}.wav"
+        path = os.path.join(AUDIO_UPLOAD, filename)
+
+        with open(path, "wb") as f:
+            for chunk in file.chunks():
+                f.write(chunk)
+
+        # Run model prediction
+        label, prob = predict_voice(path)
+
+        prob = float(prob)
+        voice_score = prob
+        dementia_risk = 1.0 - prob
+        prediction = "no_dementia" if prob >= 0.5 else "dementia"
+
+        return JsonResponse({
+            "success": True,
+            "prediction": prediction,
+            "voice_score": round(voice_score, 4),
+            "dementia_risk": round(dementia_risk, 4),
+            "raw_probability_no_dementia": round(prob, 4)
+        }, status=200)
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+    finally:
+        # Remove file after processing
+        if path and os.path.exists(path):
+            os.remove(path)
 # =====================================================
 # FINAL RESULT
 # =====================================================

@@ -55,10 +55,13 @@ async function startRound() {
     if (!memorySession) {
         // First round — start session from Flask
         try {
-            const res = await fetch("http://127.0.0.1:5000/memory/start", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" }
-            });
+            const res = await fetch("{% url 'memory_start' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        });
             const data = await res.json();
 
             memorySession = {

@@ -1,24 +1,13 @@
-/* Container wrapper to prevent body flexbox from affecting navbar */
+/* Container */
 .attention-test-container {
-    min-height: calc(100vh - 80px); /* Subtract navbar height */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-}
-
-/* Base styling - removed body flexbox styles */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #f1f5f9;
+    display: block;              /* remove flex */
+    width: 100%;
+    box-sizing: border-box;         /* small top padding only */
     margin: 0;
 }
 
-/* Header styling */
-h1 {
+/* Header */
+.attention-test-container h1 {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 15px;
@@ -26,33 +15,44 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-align: center;
+    
 }
 
 /* Instruction text */
-p {
+.attention-test-container > p {
     font-size: 1.2rem;
-    color: #cbd5e1;
-    margin-bottom: 30px;
-    text-align: center;
+    color: #475569;
+    margin-bottom: 20px;
+    
 }
 
-/* Stimulus display */
-.stimulus {
-    font-size: 140px;
-    margin: 50px 0;
-    min-height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
-    transition: all 0.2s ease;
+/* Trial info (fixed top-right) */
+.trial-info {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    font-size: 1rem;
+    color: #475569;
+    z-index: 20;
 }
 
-/* Button base styling */
-button {
-    padding: 16px 40px;
-    font-size: 1.1rem;
+/* Stimulus ball (positioned randomly via JS) */
+#stimulus {
+    position: fixed;
+    font-size: 3.5rem;
+    cursor: pointer;
+    user-select: none;
+    z-index: 10;
+    transition: transform 0.1s ease;
+    line-height: 1;
+}
+
+/* Start button */
+#startBtn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    padding: 18px 50px;
+    font-size: 1.2rem;
     font-weight: 600;
     border: none;
     border-radius: 12px;
@@ -60,117 +60,72 @@ button {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    display: block;
-    margin: 0 auto;
-}
-
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
-button:active {
-    transform: translateY(0);
-}
-
-/* Start button */
-#startBtn {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
-    padding: 20px 50px;
-    font-size: 1.3rem;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    margin-top: 10px;
 }
 
 #startBtn:hover {
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
-/* Click button */
-#clickBtn {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
-    font-size: 1.2rem;
-    padding: 18px 45px;
+#startBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
-#clickBtn:hover {
-    background: linear-gradient(135deg, #16a34a, #15803d);
+/* Loading */
+#loading p {
+    font-size: 1.1rem;
+    color: #475569;
+    text-align: center;
+    margin-top: 0px;
 }
 
-#clickBtn:active {
-    background: linear-gradient(135deg, #15803d, #166534);
-}
-
-/* Game container */
+/* Fade-in animation for game div */
 #game {
     animation: fadeIn 0.5s ease;
-    text-align: center;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Hidden class */
+/* Hidden utility */
 .hidden {
     display: none !important;
 }
 
-/* Responsive design */
+/* Responsive */
 @media (max-width: 768px) {
-    .attention-test-container {
-        padding: 30px 15px;
+    .attention-test-container h1 {
+        font-size: 1.8rem;
     }
-
-    h1 {
-        font-size: 2rem;
+    .attention-test-container > p {
+        font-size: 1rem;
+        padding: 0 16px;
     }
-    
-    .stimulus {
-        font-size: 100px;
-        min-height: 140px;
-    }
-    
-    button {
-        padding: 14px 30px;
+    #startBtn {
+        padding: 14px 36px;
         font-size: 1rem;
     }
-    
-    #startBtn {
-        padding: 16px 40px;
-        font-size: 1.1rem;
+    #stimulus {
+        font-size: 2.8rem;
     }
 }
 
 @media (max-width: 480px) {
-    .attention-test-container {
-        padding: 20px 10px;
+    .attention-test-container h1 {
+        font-size: 1.4rem;
     }
-
-    h1 {
-        font-size: 1.6rem;
-    }
-    
-    p {
-        font-size: 1rem;
-    }
-    
-    .stimulus {
-        font-size: 80px;
-        min-height: 120px;
-        margin: 30px 0;
-    }
-    
-    button {
-        padding: 12px 25px;
+    #startBtn {
+        padding: 12px 28px;
         font-size: 0.9rem;
+    }
+    #stimulus {
+        font-size: 2.2rem;
     }
 }

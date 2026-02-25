@@ -220,20 +220,23 @@ submitBtn.onclick = async () => {
     fd.append('audio', audioFile);
 
     try {
-        const res = await fetch('http://127.0.0.1:5000/voice/analyze', {
+        // Django URL for audio analysis
+        const res = await fetch("{% url 'voice_analyze' %}", {
             method: 'POST',
-            body: fd
+            body: fd,
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
         });
 
         const data = await res.json();
 
-        const csrfToken = "{{ csrf_token }}";
-
+        // Submit the score to Django
         await fetch("{% url 'submit_voice_score' %}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": csrfToken
+                "X-CSRFToken": "{{ csrf_token }}"
             },
             body: JSON.stringify({ score: data.voice_score })
         });

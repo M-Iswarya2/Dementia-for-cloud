@@ -77,9 +77,14 @@ submitBtn.onclick = async () => {
         .map(el => el.textContent);
 
     try {
-        const res = await fetch("http://127.0.0.1:5000/memory/submit", {
+        const csrfToken = "{{ csrf_token }}";
+
+        const res = await fetch("{% url 'memory_submit' %}", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
             body: JSON.stringify({
                 session_id: session.sessionId,
                 selected_words: selectedWords

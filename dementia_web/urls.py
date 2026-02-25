@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
-
+from .views import analyze_voice
 urlpatterns = [
 
     # Admin
@@ -51,9 +51,14 @@ urlpatterns = [
     path("reset-tests/", views.reset_tests, name="reset_tests"),
 
     # Trail B score submission
-path("submit-trail-b-score/", views.submit_trail_b_score, name="submit_trail_b_score"),
-path("submit-digit-span-score/", views.submit_digit_span_score, name="submit_digit_span_score"),
+    path("submit-trail-b-score/", views.submit_trail_b_score, name="submit_trail_b_score"),
+    path("submit-digit-span-score/", views.submit_digit_span_score, name="submit_digit_span_score"),
 
+    path("memory/start/", views.memory_start, name="memory_start"),
+    path("memory/submit/", views.memory_submit, name="memory_submit"),
+    path("attention/start/", views.attention_start, name="attention_start"),
+    path("attention/submit/", views.attention_submit, name="attention_submit"),
+     path("voice/analyze/", analyze_voice, name="voice_analyze"),
 ]
 
 if settings.DEBUG:
