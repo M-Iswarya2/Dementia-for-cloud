@@ -64,7 +64,7 @@ from tensorflow.keras.models import load_model
 SR = 16000
 N_MFCC = 40
 MAX_LEN = 300
-MODEL_PATH = "models\dementia_cnn_bilstm_gem.h5"
+MODEL_PATH = "models/dementia_cnn_bilstm_gem.h5"
 
 # Load the model once
 model = load_model(MODEL_PATH)
