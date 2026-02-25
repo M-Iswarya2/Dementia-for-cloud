@@ -39,9 +39,9 @@ media/
 staticfiles/
 
 # ML
-models/
+
 dataset/
-*.h5
+
 *.pt
 *.pkl
 *.joblib
