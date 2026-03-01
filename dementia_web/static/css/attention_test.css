@@ -1,28 +1,38 @@
+/* ---------------- Body / Page Background ---------------- */
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%) !important;
+    min-height: 100vh;
+}
+
 /* ---------------- Container ---------------- */
 .attention-test-container {
-    display: block; /* remove flex */
+    display: block;
     width: 100%;
     box-sizing: border-box;
     margin: 0;
     padding: 20px;
+    text-align: center; /* Center all child content */
 }
 
 /* ---------------- Header ---------------- */
 .attention-test-container h1 {
+    display: inline-block;         /* shrink-wrap the gradient */
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 15px;
+    margin: 0 auto 15px auto;      /* centered horizontally */
     background: linear-gradient(90deg, #60a5fa, #34d399);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    white-space: nowrap;           /* keep title on one line */
 }
 
 /* ---------------- Instruction text ---------------- */
 .attention-test-container > p {
     font-size: 1.2rem;
-    color: #475569;
+    color: #cbd5e1;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 /* ---------------- Trial info ---------------- */
@@ -31,7 +41,7 @@
     top: 20px;
     right: 30px;
     font-size: 1rem;
-    color: #475569;
+    color: #cbd5e1;
     z-index: 60 !important;
 }
 
@@ -59,14 +69,14 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
     margin-top: 10px;
 }
 
 .attention-test-container #startBtn:hover {
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
 }
 
 .attention-test-container #startBtn:disabled {
@@ -78,7 +88,7 @@
 /* ---------------- Loading ---------------- */
 .attention-test-container #loading p {
     font-size: 1.1rem;
-    color: #475569;
+    color: #cbd5e1;
     text-align: center;
     margin-top: 0;
 }
@@ -119,6 +129,7 @@
 @media (max-width: 480px) {
     .attention-test-container h1 {
         font-size: 1.4rem;
+        white-space: normal;
     }
     .attention-test-container #startBtn {
         padding: 12px 28px;
