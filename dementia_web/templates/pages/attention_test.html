@@ -6,7 +6,6 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/attention_test.css' %}">
 <style>
-  /* Override any base.html wrapper centering */
   main, .main-content, .content-wrapper, #main, #content {
     align-items: flex-start !important;
     justify-content: flex-start !important;
@@ -18,6 +17,7 @@
     cursor: pointer;
     user-select: none;
     z-index: 10;
+    display: none;
   }
 
   .trial-info {
@@ -27,17 +27,146 @@
     font-size: 1rem;
     z-index: 20;
   }
+
+  .instructions-box {
+    background: #f5f7fa;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: left;
+  }
+
+  .instructions-box ul {
+    margin-top: 10px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  #startBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .instructions-box {
+    background: linear-gradient(135deg, #f8fbff, #eef4ff);
+    border: 1px solid #d6e2ff;
+    border-left: 6px solid #4a90e2;
+    padding: 25px 30px;
+    border-radius: 12px;
+    max-width: 650px;
+    margin: 30px auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.instructions-box h3 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #2c3e50;
+}
+
+.instructions-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.instructions-box ul li {
+    margin-bottom: 10px;
+    padding-left: 28px;
+    position: relative;
+    font-size: 16px;
+    color: #34495e;
+}
+
+.instructions-box ul li::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #4a90e2;
+    font-weight: bold;
+}
+
+.instructions-box label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    font-size: 15px;
+    color: #2c3e50;
+}
+
+.instructions-box input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4a90e2;
+    cursor: pointer;
+}
+
+#startBtn {
+    margin-top: 20px;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#startBtn:hover:not(:disabled) {
+    background-color: #357bd8;
+    transform: translateY(-2px);
+}
+
+#startBtn:disabled {
+    background-color: #b0c4de;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="attention-test-container">
+
   <h1>Attention & Reaction Test</h1>
-  <p>Click the ball ONLY when it is <strong id="target-display"></strong></p>
 
-  <button id="startBtn">Start Test</button>
+  <!-- INSTRUCTIONS SECTION -->
+  <div class="instructions-box" id="instructionsBox">
+    <h3>Instructions</h3>
+    <ul>
+      <li>You will see a moving ball on the screen.</li>
+      <li>A target symbol will be shown.</li>
+      <li><strong>Click the ball ONLY if it matches the target.</strong></li>
+      <li>Do NOT click if it does not match.</li>
+      <li>React as quickly and accurately as possible.</li>
+    </ul>
 
+    <br>
+
+    <label>
+      <input type="checkbox" id="agreeCheck">
+      I understand the instructions.
+    </label>
+
+    <br><br>
+
+    <button id="startBtn" disabled>Start Test</button>
+  </div>
+
+  <!-- GAME SECTION -->
   <div id="game" class="hidden">
+    <p>Click the ball ONLY when it is <strong id="target-display"></strong></p>
     <div id="stimulus"></div>
     <p class="trial-info">Trial <span id="currentTrial">0</span> / <span id="totalTrials">0</span></p>
   </div>
@@ -45,12 +174,14 @@
   <div id="loading" class="hidden">
     <p>Submitting results...</p>
   </div>
+
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+
   let sessionId = null;
   let sequence = [];
   let targets = [];
@@ -63,30 +194,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const gameDiv = document.getElementById("game");
   const loadingDiv = document.getElementById("loading");
   const targetDisplay = document.getElementById("target-display");
+  const instructionsBox = document.getElementById("instructionsBox");
+  const agreeCheck = document.getElementById("agreeCheck");
 
-  // Avoid overlapping with header/instructions/trial-info
+  // Enable start button only if checkbox checked
+  agreeCheck.addEventListener("change", () => {
+    startBtn.disabled = !agreeCheck.checked;
+  });
+
   function randomizePosition() {
     const pad = 80;
     const ballSize = stimulusEl.offsetWidth;
-    const avoidEls = [
-        document.querySelector(".attention-test-container h1"),
-        document.querySelector(".attention-test-container > p"),
-        document.querySelector(".trial-info")
-    ];
 
-    let x, y, tries = 0;
-    do {
-        x = pad + Math.random() * (window.innerWidth - pad * 2 - ballSize);
-        y = pad + Math.random() * (window.innerHeight - pad * 2 - ballSize);
-
-        var overlaps = avoidEls.some(el => {
-            const rect = el.getBoundingClientRect();
-            return !(x + ballSize < rect.left || x > rect.right || y + ballSize < rect.top || y > rect.bottom);
-        });
-
-        tries++;
-        if (tries > 50) break;
-    } while (overlaps);
+    let x = pad + Math.random() * (window.innerWidth - pad * 2 - ballSize);
+    let y = pad + Math.random() * (window.innerHeight - pad * 2 - ballSize);
 
     stimulusEl.style.left = x + "px";
     stimulusEl.style.top = y + "px";
@@ -94,10 +215,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleClick() {
     if (currentIndex < 0 || currentIndex >= sequence.length) return;
-    const reactionTime = (performance.now() - stimulusStart)/1000;
+
+    const reactionTime = (performance.now() - stimulusStart) / 1000;
 
     if (sequence[currentIndex] === targets[currentIndex]) {
-        responses.push({ index: currentIndex, reaction_time: Number(reactionTime.toFixed(3)) });
+      responses.push({
+        index: currentIndex,
+        reaction_time: Number(reactionTime.toFixed(3))
+      });
     }
 
     stimulusEl.style.transform = "scale(0.8)";
@@ -107,28 +232,31 @@ document.addEventListener("DOMContentLoaded", () => {
   stimulusEl.addEventListener("click", handleClick);
 
   startBtn.onclick = async () => {
-    startBtn.disabled = true;
-    startBtn.textContent = "Loading...";
+
+    instructionsBox.classList.add("hidden");
+    gameDiv.classList.remove("hidden");
 
     try {
-      const res = await fetch("{% url 'attention_start' %}", { method: "POST", headers: {"Content-Type": "application/json"} });
+      const res = await fetch("{% url 'attention_start' %}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"}
+      });
+
       const data = await res.json();
 
       sessionId = data.session_id;
       sequence = data.sequence;
       targets = data.targets;
-      document.getElementById("totalTrials").textContent = data.total_trials;
 
-      startBtn.classList.add("hidden");
-      gameDiv.classList.remove("hidden");
+      document.getElementById("totalTrials").textContent = data.total_trials;
 
       setTimeout(runSequence, 1000);
 
     } catch (err) {
       console.error(err);
       alert("Failed to start test.");
-      startBtn.disabled = false;
-      startBtn.textContent = "Start Test";
+      instructionsBox.classList.remove("hidden");
+      gameDiv.classList.add("hidden");
     }
   };
 
@@ -137,6 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function nextTrial() {
       currentIndex++;
+
       if (currentIndex >= sequence.length) {
         stimulusEl.style.display = "none";
         submitResults();
@@ -145,16 +274,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       document.getElementById("currentTrial").textContent = currentIndex + 1;
 
-      // Update instruction for current trial
       targetDisplay.textContent = targets[currentIndex];
-
-      // Show ball stimulus
       stimulusEl.innerText = sequence[currentIndex];
+
       randomizePosition();
       stimulusEl.style.display = "block";
       stimulusStart = performance.now();
 
-      // Hide after 2s, next trial after 0.5s
       setTimeout(() => {
         stimulusEl.style.display = "none";
         setTimeout(nextTrial, 500);
@@ -174,8 +300,8 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
         body: JSON.stringify({ session_id: sessionId, responses: responses })
       });
+
       const data = await res.json();
-      if (!data.success) throw new Error(data.error || "Error");
 
       sessionStorage.setItem("attentionScore", data.attention_score || 0);
 
@@ -189,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (err) {
       console.error(err);
-      loadingDiv.innerHTML = "<p style='color: red;'>Error submitting results. Try again.</p>";
+      loadingDiv.innerHTML = "<p style='color:red;'>Error submitting results.</p>";
     }
   }
 

@@ -13,6 +13,16 @@ body {
     padding: 20px;
     text-align: center; /* Center all child content */
 }
+#game p {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#target-display {
+    color: #ffeb3b;   /* bright yellow highlight */
+    font-weight: 700;
+}
 
 /* ---------------- Header ---------------- */
 .attention-test-container h1 {

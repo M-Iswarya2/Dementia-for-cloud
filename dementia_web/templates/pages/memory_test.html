@@ -5,21 +5,42 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/memorytest.css' %}">
+<style>
+.timer-box {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #e74c3c;
+}
+
+.timer-box span {
+    font-size: 20px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="memorytest-container">
     <div class="memorytest-card">
         <h2>Memorize these words</h2>
+
         <div class="step-text">
             Step <span id="current-step">1</span> of 4
         </div>
+
         <div class="progress-bar">
             <div class="progress-fill" id="progress-fill"></div>
         </div>
+
         <p class="instruction-text">
             Round <span id="round">1</span> of 2 - Study these words carefully
         </p>
+
+        <!-- TIMER -->
+        <div class="timer-box">
+            ⏳ Time left: <span id="timer">40</span> seconds
+        </div>
+
         <div class="words-area">
             <div id="loading-message">
                 <div class="spinner-small"></div>
@@ -27,7 +48,10 @@
             </div>
             <div id="words-grid" class="words-grid" style="display: none;"></div>
         </div>
-        <button id="btn" class="memorized-btn" disabled>I've memorized them</button>
+
+        <button id="btn" class="memorized-btn" disabled>
+            I've memorized them
+        </button>
     </div>
 </div>
 {% endblock %}
@@ -36,32 +60,57 @@
 <script>
 const params = new URLSearchParams(window.location.search);
 const isNewTest = params.get("new") === "true";
+
 if (isNewTest) {
     sessionStorage.removeItem("memoryTestSession");
 }
 
 let memorySession = JSON.parse(sessionStorage.getItem("memoryTestSession"));
 
-
-// DOM
+// DOM Elements
 const btn = document.getElementById("btn");
 const grid = document.getElementById("words-grid");
 const loading = document.getElementById("loading-message");
 const roundEl = document.getElementById("round");
 const stepEl = document.getElementById("current-step");
 const progressFill = document.getElementById("progress-fill");
+const timerEl = document.getElementById("timer");
 
+// Timer Variables
+let countdown;
+let timeLeft = 40;
+
+// START TIMER FUNCTION
+function startTimer() {
+    timeLeft = 40;
+    timerEl.textContent = timeLeft;
+
+    countdown = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            btn.disabled = true;
+
+            // Auto move to next page
+            window.location.href = "{% url 'memory_select' %}";
+        }
+    }, 1000);
+}
+
+// START ROUND FUNCTION
 async function startRound() {
     if (!memorySession) {
-        // First round — start session from Flask
         try {
             const res = await fetch("{% url 'memory_start' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"
-            }
-        });
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            });
+
             const data = await res.json();
 
             memorySession = {
@@ -80,7 +129,6 @@ async function startRound() {
         }
     }
 
-    // Use existing session for current round
     const round = memorySession.currentRound;
 
     roundEl.textContent = round;
@@ -92,15 +140,20 @@ async function startRound() {
     btn.disabled = false;
 
     grid.innerHTML = memorySession.memorizeWords
-        .map(w => `<div class="word-box">${w}</div>`)
+        .map(word => `<div class="word-box">${word}</div>`)
         .join("");
+
+    // Start countdown after words appear
+    startTimer();
 }
 
+// BUTTON CLICK
 btn.onclick = () => {
+    clearInterval(countdown); // Stop timer
     window.location.href = "{% url 'memory_select' %}";
 };
 
+// Initialize
 startRound();
 </script>
-
 {% endblock %}
