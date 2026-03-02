@@ -175,7 +175,6 @@
         letter-spacing: 0.02em;
     }
 
-    /* Single digit pop animation */
     @keyframes digitPop {
         0%   { transform: scale(0.5); opacity: 0; }
         60%  { transform: scale(1.15); opacity: 1; }
@@ -278,13 +277,8 @@
         transition: opacity 0.3s;
     }
 
-    #feedback.correct {
-        color: #68d391;
-    }
-
-    #feedback.incorrect {
-        color: #fc8181;
-    }
+    #feedback.correct   { color: #68d391; }
+    #feedback.incorrect { color: #fc8181; }
 
     /* --- Score Summary --- */
     .score-summary {
@@ -320,9 +314,7 @@
         margin-bottom: 0.5rem;
     }
 
-    .score-item {
-        text-align: center;
-    }
+    .score-item { text-align: center; }
 
     .score-item .score-num {
         font-family: 'Space Mono', monospace;
@@ -338,7 +330,6 @@
         letter-spacing: 0.08em;
     }
 
-    /* --- Mode Instruction hint --- */
     .mode-hint {
         display: none;
         text-align: center;
@@ -347,13 +338,235 @@
         margin-top: 0.5rem;
     }
 
-    .mode-hint.show {
-        display: block;
+    .mode-hint.show { display: block; }
+
+    /* ── Instructions Overlay ───────────────────────────────── */
+    #instructionsOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background:
+            radial-gradient(ellipse at 20% 50%, rgba(99, 179, 237, 0.06) 0%, transparent 60%),
+            radial-gradient(ellipse at 80% 20%, rgba(154, 230, 180, 0.05) 0%, transparent 60%),
+            #0d1117;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 2rem 1.5rem;
+        overflow-y: auto;
+        transition: opacity 0.4s ease;
+    }
+
+    .instructions-card {
+        width: 100%;
+        max-width: 560px;
+        background: rgba(22, 27, 34, 0.98);
+        border: 1px solid rgba(99, 179, 237, 0.15);
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 8px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+    }
+
+    .instructions-card .inst-header {
+        text-align: center;
+        margin-bottom: 1.75rem;
+    }
+
+    .instructions-card .inst-header h2 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #e6edf3;
+        margin-top: 0.75rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .instructions-card .inst-header p {
+        font-size: 0.85rem;
+        color: #7d8590;
+        line-height: 1.6;
+    }
+
+    .inst-section {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        padding: 1.1rem 1.2rem;
+        margin-bottom: 0.9rem;
+    }
+
+    .inst-section-label {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #484f58;
+        margin-bottom: 0.6rem;
+    }
+
+    .inst-section p {
+        font-size: 0.88rem;
+        color: #c9d1d9;
+        line-height: 1.65;
+    }
+
+    /* Mode comparison row */
+    .mode-comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 0.9rem;
+    }
+
+    .mode-box {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .mode-box.forward { border-color: rgba(99,179,237,0.2); }
+    .mode-box.backward { border-color: rgba(167,139,250,0.2); }
+
+    .mode-box .mode-icon {
+        font-size: 1.4rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .mode-box .mode-name {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+    }
+
+    .mode-box.forward  .mode-name  { color: #63b3ed; }
+    .mode-box.backward .mode-name  { color: #a78bfa; }
+
+    .mode-box .mode-example {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.78rem;
+        color: #7d8590;
+        line-height: 1.7;
+    }
+
+    .mode-box .mode-example .seen  { color: #e6edf3; }
+    .mode-box .mode-example .type  { color: #68d391; }
+
+    /* Notes list */
+    .inst-notes {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+        padding: 0;
+    }
+
+    .inst-notes li {
+        display: flex;
+        gap: 0.7rem;
+        align-items: flex-start;
+        font-size: 0.85rem;
+        color: #c9d1d9;
+        line-height: 1.5;
+    }
+
+    .inst-notes li .icon { flex-shrink: 0; margin-top: 1px; }
+
+    /* Begin button */
+    #beginBtn {
+        width: 100%;
+        margin-top: 1.5rem;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        background: linear-gradient(135deg, #63b3ed, #4299e1);
+        color: #0d1117;
+        box-shadow: 0 4px 20px rgba(99,179,237,0.35);
+        transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    #beginBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(99,179,237,0.5);
     }
 </style>
 {% endblock %}
 
 {% block content %}
+
+<!-- ── Instructions Overlay ── -->
+<div id="instructionsOverlay">
+  <div class="instructions-card">
+
+    <div class="inst-header">
+      <div class="test-badge">Cognitive Assessment</div>
+      <h2>Digit Span Test</h2>
+      <p>Read these instructions carefully before you begin.</p>
+    </div>
+
+    <!-- What happens -->
+    <div class="inst-section">
+      <div class="inst-section-label">What happens</div>
+      <p>A sequence of digits will flash on screen <strong style="color:#e6edf3;">one at a time</strong>. Watch carefully — they disappear quickly. Once all digits have been shown, you will type what you remember.</p>
+    </div>
+
+    <!-- Two modes -->
+    <div class="inst-section-label" style="font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:#484f58; margin-bottom:0.6rem; padding-left:2px;">Two modes</div>
+    <div class="mode-comparison">
+      <div class="mode-box forward">
+        <div class="mode-icon">→</div>
+        <div class="mode-name">FORWARD</div>
+        <div class="mode-example">
+          Seen: <span class="seen">4 · 7 · 2</span><br>
+          Type: <span class="type">4 7 2</span>
+        </div>
+      </div>
+      <div class="mode-box backward">
+        <div class="mode-icon">←</div>
+        <div class="mode-name">BACKWARD</div>
+        <div class="mode-example">
+          Seen: <span class="seen">4 · 7 · 2</span><br>
+          Type: <span class="type">2 7 4</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="inst-section">
+      <div class="inst-section-label">Important notes</div>
+      <ul class="inst-notes">
+        <li>
+          <span class="icon" style="color:#63b3ed;">◈</span>
+          Forward mode comes first (5 rounds), then Backward mode (5 rounds) — 10 rounds total.
+        </li>
+        <li>
+          <span class="icon" style="color:#a78bfa;">◈</span>
+          The digit sequence gets longer with each round — stay focused as it gets harder.
+        </li>
+        <li>
+          <span class="icon" style="color:#68d391;">◈</span>
+          Type only the digits — no spaces or separators needed.
+        </li>
+        <li>
+          <span class="icon" style="color:#fc8181;">◈</span>
+          Each answer is final once submitted. You cannot go back.
+        </li>
+      </ul>
+    </div>
+
+    <button id="beginBtn">▶ &nbsp;Begin Test</button>
+
+  </div>
+</div>
+
+<!-- ── Main Test ── -->
 <div class="test-container">
     <div class="test-card">
 
@@ -363,22 +576,18 @@
             <p>Digits will flash one at a time. In <strong style="color:#63b3ed;">Forward</strong> mode, type them in the same order. In <strong style="color:#a78bfa;">Backward</strong> mode, type them in reverse.</p>
         </div>
 
-        <!-- Status Bar -->
         <div class="status-bar" id="status-bar" style="display:none;">
             <span>Mode: <span class="mode-tag" id="mode-label">FORWARD</span></span>
             <div class="progress-dots" id="progress-dots"></div>
             <span id="length-label">Length: 3</span>
         </div>
 
-        <!-- Digit Display -->
         <div class="digit-display-wrapper">
             <div id="digit-display" class="idle">Press Start to begin</div>
         </div>
 
-        <!-- Mode hint -->
         <div class="mode-hint" id="mode-hint"></div>
 
-        <!-- Input -->
         <input type="text"
                id="user-input"
                placeholder="Type digits here..."
@@ -386,16 +595,13 @@
                autocomplete="off"
                inputmode="numeric">
 
-        <!-- Buttons -->
         <div class="button-group">
             <button id="start-btn" class="btn btn-start">▶ Start Test</button>
             <button id="submit-btn" class="btn btn-submit" disabled>Submit ↵</button>
         </div>
 
-        <!-- Feedback -->
         <div id="feedback"></div>
 
-        <!-- Score Summary (shown at end) -->
         <div class="score-summary" id="score-summary">
             <h3>✓ Test Complete</h3>
             <div class="score-row">
@@ -421,39 +627,44 @@
 
 {% block extra_js %}
 <script>
+    /* ── Instructions dismiss ──────────────────────────────── */
+    document.getElementById("beginBtn").addEventListener("click", function () {
+        const overlay = document.getElementById("instructionsOverlay");
+        overlay.style.opacity = "0";
+        setTimeout(function () { overlay.style.display = "none"; }, 400);
+    });
+
     /* ── Configuration ─────────────────────────────────────── */
-    const MAX_ROUNDS   = 5;       // rounds per mode
-    const DIGIT_DELAY  = 700;     // ms each digit is shown
-    const DIGIT_GAP    = 250;     // ms blank between digits
-    const POST_DELAY   = 1000;    // ms before next round starts
+    const MAX_ROUNDS   = 5;
+    const DIGIT_DELAY  = 700;
+    const DIGIT_GAP    = 250;
+    const POST_DELAY   = 1000;
 
     /* ── State ──────────────────────────────────────────────── */
-    let currentLength  = 3;
-    let round          = 0;
-    let forwardCorrect = 0;
+    let currentLength   = 3;
+    let round           = 0;
+    let forwardCorrect  = 0;
     let backwardCorrect = 0;
-    let mode           = "forward";   // "forward" | "backward"
-    let currentDigits  = "";          // the generated digit string (always stored as-generated)
-    let accepting      = false;       // whether input is live
+    let mode            = "forward";
+    let currentDigits   = "";
+    let accepting       = false;
 
     /* ── DOM ────────────────────────────────────────────────── */
-    const display    = document.getElementById("digit-display");
-    const input      = document.getElementById("user-input");
-    const startBtn   = document.getElementById("start-btn");
-    const submitBtn  = document.getElementById("submit-btn");
-    const feedback   = document.getElementById("feedback");
-    const statusBar  = document.getElementById("status-bar");
-    const modeLabel  = document.getElementById("mode-label");
-    const lengthLabel= document.getElementById("length-label");
-    const dotsEl     = document.getElementById("progress-dots");
-    const modeHint   = document.getElementById("mode-hint");
+    const display     = document.getElementById("digit-display");
+    const input       = document.getElementById("user-input");
+    const startBtn    = document.getElementById("start-btn");
+    const submitBtn   = document.getElementById("submit-btn");
+    const feedback    = document.getElementById("feedback");
+    const statusBar   = document.getElementById("status-bar");
+    const modeLabel   = document.getElementById("mode-label");
+    const lengthLabel = document.getElementById("length-label");
+    const dotsEl      = document.getElementById("progress-dots");
+    const modeHint    = document.getElementById("mode-hint");
 
     /* ── Helpers ────────────────────────────────────────────── */
     function generateDigits(length) {
         let digits = "";
-        for (let i = 0; i < length; i++) {
-            digits += Math.floor(Math.random() * 10);
-        }
+        for (let i = 0; i < length; i++) digits += Math.floor(Math.random() * 10);
         return digits;
     }
 
@@ -461,46 +672,31 @@
         dotsEl.innerHTML = "";
         for (let i = 0; i < MAX_ROUNDS; i++) {
             const dot = document.createElement("span");
-            if (i < round) {
-                dot.classList.add("done");
-            } else if (i === round) {
-                dot.classList.add("active");
-            }
+            if (i < round)       dot.classList.add("done");
+            else if (i === round) dot.classList.add("active");
             dotsEl.appendChild(dot);
         }
     }
 
     function setFeedback(text, type) {
         feedback.textContent = text;
-        feedback.className   = type; // "correct" | "incorrect" | ""
+        feedback.className   = type;
     }
 
-    /* ── Sequential digit display (one-by-one) ─────────────── */
+    /* ── Sequential digit display ───────────────────────────── */
     function showDigitsSequentially(digits, onDone) {
-        /*
-         * Always shows digits in the ORDER provided (left to right).
-         * Forward mode  → passes digits as-is        (e.g. "3 2 1")
-         * Backward mode → passes digits as-is too    (e.g. "3 2 1")
-         *                 the ANSWER is what gets reversed, not the display.
-         */
-        display.className = "";
+        display.className   = "";
         display.textContent = "";
         let idx = 0;
 
         function showNext() {
             if (idx >= digits.length) {
-                // All digits shown → blank, then prompt input
                 display.textContent = "";
                 setTimeout(onDone, DIGIT_GAP);
                 return;
             }
-
-            // Show digit with pop animation
-            display.innerHTML =
-                '<span class="digit-animate">' + digits[idx] + '</span>';
-
+            display.innerHTML = '<span class="digit-animate">' + digits[idx] + '</span>';
             idx++;
-            // After DIGIT_DELAY show blank gap, then next
             setTimeout(function () {
                 display.textContent = "";
                 setTimeout(showNext, DIGIT_GAP);
@@ -518,69 +714,53 @@
         submitBtn.disabled = true;
         setFeedback("", "");
 
-        // Update UI
         modeLabel.textContent  = mode.toUpperCase();
         modeLabel.style.color  = mode === "forward" ? "#63b3ed" : "#a78bfa";
         lengthLabel.textContent = "Length: " + currentLength;
         buildDots();
         statusBar.style.display = "flex";
 
-        // Mode hint
         modeHint.classList.add("show");
         if (mode === "forward") {
             modeHint.textContent = "↑ Type in the SAME order shown";
+            modeHint.style.color = "#484f58";
         } else {
             modeHint.textContent = "↓ Type in REVERSE order";
             modeHint.style.color = "#a78bfa";
         }
 
-        // Generate digits (stored in original order always)
         currentDigits = generateDigits(currentLength);
 
-        // Show them one by one (always original order)
         showDigitsSequentially(currentDigits, function () {
-            display.className = "prompt";
+            display.className   = "prompt";
             display.textContent = mode === "backward"
                 ? "Now type them in reverse ↩"
                 : "Now type what you saw";
-            input.disabled = false;
+            input.disabled    = false;
             submitBtn.disabled = false;
-            accepting = true;
+            accepting         = true;
             input.focus();
         });
     }
 
-    /* ── Submit handler ─────────────────────────────────────── */
+    /* ── Submit ──────────────────────────────────────────────── */
     submitBtn.addEventListener("click", handleSubmit);
-
     input.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" && accepting) {
-            handleSubmit();
-        }
+        if (e.key === "Enter" && accepting) handleSubmit();
     });
 
     function handleSubmit() {
-        if (!accepting) { return; }
+        if (!accepting) return;
         accepting = false;
 
-        const userAnswer = input.value.trim();
-
-        /*
-         * FORWARD : correct answer = digits as shown        (e.g. "4 7 2" → "472")
-         * BACKWARD: correct answer = digits in reverse      (e.g. "4 7 2" → "274")
-         *
-         * currentDigits is always stored in generation order.
-         */
-        let correctAnswer;
-        if (mode === "backward") {
-            correctAnswer = currentDigits.split("").reverse().join("");
-        } else {
-            correctAnswer = currentDigits;
-        }
+        const userAnswer    = input.value.trim();
+        const correctAnswer = mode === "backward"
+            ? currentDigits.split("").reverse().join("")
+            : currentDigits;
 
         if (userAnswer === correctAnswer) {
-            if (mode === "forward") { forwardCorrect++; }
-            else                    { backwardCorrect++; }
+            if (mode === "forward") forwardCorrect++;
+            else                    backwardCorrect++;
             setFeedback("✓ Correct!", "correct");
         } else {
             setFeedback("✗ Incorrect — answer was: " + correctAnswer, "incorrect");
@@ -589,26 +769,16 @@
         round++;
 
         if (round < MAX_ROUNDS) {
-
-    // Increase length but cap it per mode
-    if (mode === "forward") {
-        currentLength = Math.min(currentLength + 1, 5);
-    }
-
-    if (mode === "backward") {
-        currentLength = Math.min(currentLength + 1, 4);
-    }
-
-    setTimeout(startRound, POST_DELAY);
-} else if (mode === "forward") {
-            // Switch to backward mode
+            if (mode === "forward")  currentLength = Math.min(currentLength + 1, 5);
+            if (mode === "backward") currentLength = Math.min(currentLength + 1, 4);
+            setTimeout(startRound, POST_DELAY);
+        } else if (mode === "forward") {
             mode          = "backward";
             round         = 0;
             currentLength = 3;
             setFeedback("Forward complete! Now: Backward mode ↩", "correct");
             setTimeout(startRound, POST_DELAY + 500);
         } else {
-            // Both modes done
             finishTest();
         }
     }
@@ -626,15 +796,13 @@
 
     /* ── Finish ──────────────────────────────────────────────── */
     function finishTest() {
-        input.disabled    = true;
+        input.disabled     = true;
         submitBtn.disabled = true;
         setFeedback("", "");
         modeHint.classList.remove("show");
-
         display.className   = "idle";
-        display.textContent  = "Complete!";
+        display.textContent = "Complete!";
 
-        // Show score summary
         const summary = document.getElementById("score-summary");
         document.getElementById("fwd-score").textContent   = forwardCorrect;
         document.getElementById("bwd-score").textContent   = backwardCorrect;
@@ -647,10 +815,7 @@
                 "Content-Type": "application/json",
                 "X-CSRFToken": "{{ csrf_token }}"
             },
-            body: JSON.stringify({
-                forward:  forwardCorrect,
-                backward: backwardCorrect
-            })
+            body: JSON.stringify({ forward: forwardCorrect, backward: backwardCorrect })
         })
         .then(function (res) { return res.json(); })
         .then(function (data) {

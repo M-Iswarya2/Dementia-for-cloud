@@ -5,117 +5,608 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/trail_test.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-.trail-container { max-width: 800px; margin: auto; padding: 20px; }
-.trail-header { text-align: center; margin-bottom: 20px; }
-.trail-board { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-.trail-item { width: 60px; height: 60px; background: #eee; display:flex; align-items:center; justify-content:center; font-weight:bold; border-radius:6px; cursor:pointer; user-select:none; }
-.trail-item.correct { background: #4caf50; color: white; }
-.trail-item.wrong { background: #f44336; color: white; }
-.trail-footer { text-align: center; margin-top: 20px; }
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5c3;
+    --accent2: #7c6aff;
+    --danger: #ff4d6d;
+    --text: #e8edf5;
+    --muted: #6b7a9a;
+    --correct: #00c896;
+    --wrong: #ff4d6d;
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Ambient background glow */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 500px;
+    background: radial-gradient(ellipse, rgba(0,229,195,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .trail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  .trail-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(0,229,195,0.3);
+    background: rgba(0,229,195,0.06);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 18px;
+  }
+
+  .trail-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #e8edf5 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .trail-header p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto 6px;
+  }
+
+  .sequence-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .hint-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .hint-chip.num { color: var(--accent); border-color: rgba(0,229,195,0.25); }
+  .hint-chip.let { color: var(--accent2); border-color: rgba(124,106,255,0.25); }
+  .hint-arrow { color: var(--muted); font-size: 11px; }
+
+  /* ── Stats Bar ── */
+  .stats-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+    justify-content: center;
+  }
+
+  .stat-card {
+    flex: 1;
+    max-width: 180px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .stat-card.time::after { background: var(--accent); }
+  .stat-card.err::after  { background: var(--danger); }
+  .stat-card.prog::after { background: var(--accent2); }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .stat-card.time .stat-value { color: var(--accent); }
+  .stat-card.err .stat-value  { color: var(--danger); }
+  .stat-card.prog .stat-value { color: var(--accent2); }
+
+  .stat-unit {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── Board ── */
+  .board-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 28px;
+  }
+
+  .trail-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 12px;
+  }
+
+  .trail-item {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 17px;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
+    position: relative;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+
+  /* Numbers vs Letters subtle tint */
+  .trail-item[data-type="num"] {
+    border-color: rgba(0,229,195,0.2);
+    color: var(--accent);
+  }
+  .trail-item[data-type="let"] {
+    border-color: rgba(124,106,255,0.2);
+    color: var(--accent2);
+  }
+
+  .trail-item:hover:not(.correct):not(.wrong) {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    background: #212d42;
+    border-color: rgba(255,255,255,0.15);
+  }
+
+  .trail-item.correct {
+    background: rgba(0,200,150,0.15);
+    border-color: var(--correct);
+    color: var(--correct);
+    cursor: default;
+    transform: scale(0.96);
+  }
+
+  .trail-item.wrong {
+    animation: shake 0.35s ease;
+    background: rgba(255,77,109,0.15);
+    border-color: var(--wrong);
+    color: var(--wrong);
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    50%      { transform: translateX(6px); }
+    80%      { transform: translateX(-4px); }
+  }
+
+
+
+  /* ── Submit Button ── */
+  .trail-footer {
+    text-align: center;
+  }
+
+  #submitBtn {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 16px 48px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--accent), #00b8a0);
+    color: #0a0e1a;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(0,229,195,0.3);
+  }
+
+  #submitBtn:disabled {
+    background: var(--surface2);
+    color: var(--muted);
+    box-shadow: none;
+    cursor: not-allowed;
+    border: 1px solid var(--border);
+  }
+
+  #submitBtn:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,229,195,0.45);
+  }
+
+  /* ── Complete overlay ── */
+  .complete-banner {
+    display: none;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0,229,195,0.1), rgba(124,106,255,0.1));
+    border: 1px solid rgba(0,229,195,0.3);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .complete-banner.show { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateY(10px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .complete-banner h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .complete-banner p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  /* ── Progress bar ── */
+  .progress-track {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 100px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.3s ease;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .trail-board { grid-template-columns: repeat(auto-fill, minmax(58px,1fr)); gap: 8px; }
+    .stats-bar { flex-direction: column; align-items: center; }
+    .stat-card { max-width: 100%; width: 100%; }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
+
+<!-- Instructions Screen -->
+<div id="instructionsScreen" style="
+  position: fixed; inset: 0; z-index: 100;
+  background: #0a0e1a;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+">
+  <div style="
+    max-width: 560px; width: 100%;
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 40px 36px;
+    text-align: center;
+  ">
+    <div style="
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: #00e5c3; border: 1px solid rgba(0,229,195,0.3);
+      background: rgba(0,229,195,0.06);
+      padding: 5px 14px; border-radius: 100px; margin-bottom: 20px;
+    ">Instructions</div>
+
+    <h2 style="
+      font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 24px;
+      background: linear-gradient(135deg, #e8edf5 30%, #00e5c3 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    ">Trail Making Test B</h2>
+
+    <div style="text-align: left; margin-bottom: 28px;">
+
+      <div style="
+        background: #1a2235; border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 12px; padding: 20px 22px; margin-bottom: 14px;
+      ">
+        <p style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#6b7a9a; margin-bottom:10px;">What to do</p>
+        <p style="font-size:15px; color:#e8edf5; line-height:1.7;">
+          You will see a set of circles on screen, each containing either a <strong style="color:#00e5c3">number</strong> or a <strong style="color:#7c6aff">letter</strong>. Click them in <strong style="color:#e8edf5">alternating order</strong> — number, then letter, then number, and so on.
+        </p>
+      </div>
+
+      <div style="
+        background: #1a2235; border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 12px; padding: 20px 22px; margin-bottom: 14px;
+      ">
+        <p style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#6b7a9a; margin-bottom:10px;">Correct sequence</p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+          <span style="font-family:'DM Mono',monospace; padding:5px 12px; border-radius:7px; background:rgba(0,229,195,0.1); border:1px solid rgba(0,229,195,0.25); color:#00e5c3; font-size:14px;">1</span>
+          <span style="color:#6b7a9a; font-size:12px;">→</span>
+          <span style="font-family:'DM Mono',monospace; padding:5px 12px; border-radius:7px; background:rgba(124,106,255,0.1); border:1px solid rgba(124,106,255,0.25); color:#7c6aff; font-size:14px;">A</span>
+          <span style="color:#6b7a9a; font-size:12px;">→</span>
+          <span style="font-family:'DM Mono',monospace; padding:5px 12px; border-radius:7px; background:rgba(0,229,195,0.1); border:1px solid rgba(0,229,195,0.25); color:#00e5c3; font-size:14px;">2</span>
+          <span style="color:#6b7a9a; font-size:12px;">→</span>
+          <span style="font-family:'DM Mono',monospace; padding:5px 12px; border-radius:7px; background:rgba(124,106,255,0.1); border:1px solid rgba(124,106,255,0.25); color:#7c6aff; font-size:14px;">B</span>
+          <span style="color:#6b7a9a; font-size:12px;">→</span>
+          <span style="font-family:'DM Mono',monospace; padding:5px 12px; border-radius:7px; background:rgba(0,229,195,0.1); border:1px solid rgba(0,229,195,0.25); color:#00e5c3; font-size:14px;">3</span>
+          <span style="color:#6b7a9a; font-size:12px;">→</span>
+          <span style="font-family:'DM Mono',monospace; padding:5px 12px; border-radius:7px; background:rgba(124,106,255,0.1); border:1px solid rgba(124,106,255,0.25); color:#7c6aff; font-size:14px;">C</span>
+          <span style="color:#6b7a9a; font-size:12px;">→ …</span>
+        </div>
+      </div>
+
+      <div style="
+        background: #1a2235; border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 12px; padding: 20px 22px;
+      ">
+        <p style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#6b7a9a; margin-bottom:10px;">Important notes</p>
+        <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:10px;">
+          <li style="display:flex; gap:10px; align-items:flex-start; font-size:14px; color:#c8d0e0; line-height:1.5;">
+            <span style="color:#00e5c3; margin-top:2px;">⏱</span>
+            The timer starts the moment you click your first circle. Work as <strong style="color:#e8edf5">quickly and accurately</strong> as possible.
+          </li>
+          <li style="display:flex; gap:10px; align-items:flex-start; font-size:14px; color:#c8d0e0; line-height:1.5;">
+            <span style="color:#ff4d6d; margin-top:2px;">✕</span>
+            Clicking the wrong circle counts as a mistake and will be recorded.
+          </li>
+          <li style="display:flex; gap:10px; align-items:flex-start; font-size:14px; color:#c8d0e0; line-height:1.5;">
+            <span style="color:#7c6aff; margin-top:2px;">↩</span>
+            Correctly clicked circles turn green and cannot be clicked again.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <button onclick="startTest()" style="
+      font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
+      letter-spacing: 0.04em; padding: 16px 52px;
+      border: none; border-radius: 100px; cursor: pointer;
+      background: linear-gradient(135deg, #00e5c3, #00b8a0);
+      color: #0a0e1a;
+      box-shadow: 0 4px 24px rgba(0,229,195,0.35);
+      transition: transform 0.15s, box-shadow 0.2s;
+      width: 100%;
+    "
+    onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 32px rgba(0,229,195,0.45)'"
+    onmouseout="this.style.transform='';this.style.boxShadow='0 4px 24px rgba(0,229,195,0.35)'"
+    >Begin Test</button>
+  </div>
+</div>
+
 <div class="trail-container">
-    <div class="trail-header">
-        <h1>Trail Making Test B</h1>
-        <p>Click numbers and letters in alternating order as fast as possible.</p>
-        <p>Example: 1 → A → 2 → B → 3 → C …</p>
-    </div>
 
-    <div class="trail-board" id="trailBoard">
-        <!-- Items generated by JS -->
-    </div>
+  <div class="trail-header">
+    <div class="badge">Cognitive Assessment</div>
+    <h1>Trail Making Test B</h1>
+  </div><!-- end trail-header -->
 
-    <div class="trail-footer">
-        <p>Time: <span id="timeElapsed">0.0</span> sec</p>
-        <p>Mistakes: <span id="mistakes">0</span></p>
-        <button id="submitBtn" class="btn btn-primary" disabled>Submit Score</button>
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-card time">
+      <div class="stat-label">Time</div>
+      <div class="stat-value" id="timeElapsed">0.0</div>
+      <div class="stat-unit">seconds</div>
     </div>
+    <div class="stat-card err">
+      <div class="stat-label">Mistakes</div>
+      <div class="stat-value" id="mistakes">0</div>
+      <div class="stat-unit">errors</div>
+    </div>
+    <div class="stat-card prog">
+      <div class="stat-label">Progress</div>
+      <div class="stat-value" id="progressVal">0</div>
+      <div class="stat-unit">of 18 steps</div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-track">
+    <div class="progress-fill" id="progressBar"></div>
+  </div>
+
+  <!-- Board -->
+  <div class="board-wrapper">
+    <div class="trail-board" id="trailBoard"></div>
+  </div>
+
+  <!-- Complete Banner -->
+  <div class="complete-banner" id="completeBanner">
+    <h2>✓ Test Complete!</h2>
+    <p>Great work. Submit your result below.</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="trail-footer">
+    <button id="submitBtn" disabled>Submit Score</button>
+  </div>
+
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+function startTest() {
+  const screen = document.getElementById("instructionsScreen");
+  screen.style.opacity = "0";
+  screen.style.transition = "opacity 0.4s ease";
+  setTimeout(() => screen.style.display = "none", 400);
+}
 
-    const sequence = [
-        "1","A","2","B","3","C","4","D","5","E","6","F","7","G","8","H","9","I"
-    ]; // Trail B sequence
-    let currentIndex = 0;
-    let mistakes = 0;
-    let startTime = null;
+document.addEventListener("DOMContentLoaded", function () {
 
-    const board = document.getElementById("trailBoard");
-    const timeEl = document.getElementById("timeElapsed");
-    const mistakesEl = document.getElementById("mistakes");
-    const submitBtn = document.getElementById("submitBtn");
+  const sequence = ["1","A","2","B","3","C","4","D","5","E","6","F","7","G","8","H","9","I"];
+  let currentIndex = 0;
+  let mistakes = 0;
+  let startTime = null;
+  let finished = false;
 
-    // Shuffle and render items
-    const shuffled = [...sequence].sort(() => Math.random() - 0.5);
+  const board      = document.getElementById("trailBoard");
+  const timeEl     = document.getElementById("timeElapsed");
+  const mistakesEl = document.getElementById("mistakes");
+  const progressBar= document.getElementById("progressBar");
+  const progressVal= document.getElementById("progressVal");
+  const submitBtn  = document.getElementById("submitBtn");
+  const banner     = document.getElementById("completeBanner");
 
-    shuffled.forEach((val, idx) => {
-        const div = document.createElement("div");
-        div.className = "trail-item";
-        div.textContent = val;
-        div.addEventListener("click", () => handleClick(div, val));
-        board.appendChild(div);
-    });
+  // Build shuffled board
+  const shuffled = [...sequence].sort(() => Math.random() - 0.5);
 
-    function handleClick(div, val) {
-        if (!startTime) startTime = new Date().getTime();
+  shuffled.forEach(val => {
+    const div = document.createElement("div");
+    div.className = "trail-item";
+    div.textContent = val;
+    // Tag numbers vs letters for styling
+    div.dataset.type = isNaN(val) ? "let" : "num";
+    div.addEventListener("click", () => handleClick(div, val));
+    board.appendChild(div);
+  });
 
-        if (val === sequence[currentIndex]) {
-            div.classList.add("correct");
-            currentIndex++;
-            if (currentIndex === sequence.length) {
-                finishTest();
-            }
+  function handleClick(div, val) {
+    if (finished) return;
+    if (!startTime) startTime = Date.now();
+
+    if (val === sequence[currentIndex]) {
+      div.classList.remove("pulse");
+      div.classList.add("correct");
+      div.style.pointerEvents = "none";
+      currentIndex++;
+
+      // Update progress
+      const pct = (currentIndex / sequence.length) * 100;
+      progressBar.style.width = pct + "%";
+      progressVal.textContent = currentIndex;
+
+      if (currentIndex === sequence.length) {
+        finishTest();
+      } else {
+        // continue
+      }
+    } else {
+      if (!div.classList.contains("wrong")) {
+        div.classList.add("wrong");
+        mistakes++;
+        mistakesEl.textContent = mistakes;
+        setTimeout(() => div.classList.remove("wrong"), 400);
+      }
+    }
+  }
+
+  function finishTest() {
+    finished = true;
+    const timeTaken = ((Date.now() - startTime) / 1000).toFixed(2);
+    timeEl.textContent = timeTaken;
+    banner.classList.add("show");
+    submitBtn.disabled = false;
+
+    submitBtn.addEventListener("click", () => {
+      submitBtn.textContent = "Submitting…";
+      submitBtn.disabled = true;
+
+      fetch("{% url 'submit_trail_b_score' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+          time_taken: parseFloat(timeTaken),
+          mistakes: mistakes
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Score submitted successfully!");
+          window.location.href = "{% url 'take_test' %}";
         } else {
-            div.classList.add("wrong");
-            mistakes++;
-            mistakesEl.textContent = mistakes;
+          alert("Error submitting score.");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Submit Score";
         }
-    }
-
-    function finishTest() {
-        const endTime = new Date().getTime();
-        const timeTaken = ((endTime - startTime)/1000).toFixed(2);
-        timeEl.textContent = timeTaken;
+      })
+      .catch(() => {
+        alert("Network error. Please try again.");
         submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Score";
+      });
+    });
+  }
 
-        submitBtn.addEventListener("click", () => {
-            fetch("{% url 'submit_trail_b_score' %}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-                body: JSON.stringify({
-                    time_taken: parseFloat(timeTaken),
-                    mistakes: mistakes
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Score submitted successfully!");
-                    window.location.href = "{% url 'take_test' %}";
-                } else {
-                    alert("Error submitting score.");
-                }
-            })
-        });
+  // Live timer
+  setInterval(() => {
+    if (startTime && !finished) {
+      timeEl.textContent = ((Date.now() - startTime) / 1000).toFixed(1);
     }
+  }, 100);
 
-    // Timer update
-    setInterval(() => {
-        if (startTime && currentIndex < sequence.length) {
-            const elapsed = ((new Date().getTime() - startTime)/1000).toFixed(1);
-            timeEl.textContent = elapsed;
-        }
-    }, 100);
 });
 </script>
 {% endblock %}
