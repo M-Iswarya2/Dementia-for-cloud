@@ -16,6 +16,11 @@
 .timer-box span {
     font-size: 20px;
 }
+
+.words-grid.blurred .word-box {
+    filter: blur(6px);
+    user-select: none;
+}
 </style>
 {% endblock %}
 
@@ -56,6 +61,7 @@
 </div>
 {% endblock %}
 
+
 {% block extra_js %}
 <script>
 const params = new URLSearchParams(window.location.search);
@@ -79,6 +85,7 @@ const timerEl = document.getElementById("timer");
 // Timer Variables
 let countdown;
 let timeLeft = 40;
+let testStarted = false;
 
 // START TIMER FUNCTION
 function startTimer() {
@@ -92,8 +99,6 @@ function startTimer() {
         if (timeLeft <= 0) {
             clearInterval(countdown);
             btn.disabled = true;
-
-            // Auto move to next page
             window.location.href = "{% url 'memory_select' %}";
         }
     }, 1000);
@@ -137,20 +142,29 @@ async function startRound() {
 
     loading.style.display = "none";
     grid.style.display = "grid";
-    btn.disabled = false;
 
     grid.innerHTML = memorySession.memorizeWords
-        .map(word => `<div class="word-box">${word}</div>`)
-        .join("");
+    .map(word => `<div class="word-box">${word}</div>`)
+    .join("");
 
-    // Start countdown after words appear
-    startTimer();
+grid.classList.add("blurred");
+    // Show "Start Test" button instead of enabling memorized button
+    btn.textContent = "Start Test";
+    btn.disabled = false;
+    btn.dataset.mode = "start";
 }
 
-// BUTTON CLICK
+// BUTTON CLICK — handles both Start Test and I've Memorized
 btn.onclick = () => {
-    clearInterval(countdown); // Stop timer
-    window.location.href = "{% url 'memory_select' %}";
+    if (btn.dataset.mode === "start") {
+        grid.classList.remove("blurred");
+        btn.textContent = "I've memorized them";
+        btn.dataset.mode = "memorized";
+        startTimer();
+    } else {
+        clearInterval(countdown);
+        window.location.href = "{% url 'memory_select' %}";
+    }
 };
 
 // Initialize

@@ -646,7 +646,7 @@ def final_result(request):
 
     # Compute final risk score
     cognitive_score = (memory + attention + trail_b + digit_span) / 4
-    final_score = cognitive_score * 0.4 + voice * 0.4 + questionnaire * 0.2
+    final_score = cognitive_score * 0.6 + voice * 0.2 + questionnaire * 0.2
 
     # Risk label
     if final_score >= 0.75:

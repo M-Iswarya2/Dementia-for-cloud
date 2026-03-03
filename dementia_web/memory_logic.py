@@ -2,12 +2,40 @@ import random
 import time
 
 WORD_BANK = [
-    "apple", "river", "chair", "music", "clock",
-    "doctor", "yellow", "garden", "phone", "mirror",
-    "train", "bread", "cloud", "pencil", "window",
-    "carpet", "forest", "bottle", "flower", "camera",
-    "school", "beach", "coffee", "mountain", "shirt",
-    "paper", "laptop", "rain", "book", "shoe"
+    # Nature
+    "river", "cloud", "forest", "mountain", "ocean",
+    "desert", "volcano", "glacier", "canyon", "jungle",
+    "island", "meadow", "waterfall", "cave", "storm",
+
+    # Animals
+    "dolphin", "eagle", "tiger", "penguin", "giraffe",
+    "elephant", "wolf", "parrot", "shark", "rabbit",
+    "panther", "falcon", "tortoise", "buffalo", "cobra",
+
+    # Objects / Household
+    "mirror", "carpet", "ladder", "lantern", "compass",
+    "candle", "kettle", "blanket", "pillow", "hammer",
+    "anchor", "barrel", "helmet", "ribbon", "trophy",
+
+    # Food & Drink
+    "mango", "pepper", "lemon", "walnut", "mushroom",
+    "ginger", "honey", "salmon", "pretzel", "avocado",
+
+    # Places
+    "castle", "harbour", "temple", "stadium", "lighthouse",
+    "tunnel", "balcony", "rooftop", "library", "factory",
+
+    # Abstract / Misc
+    "shadow", "silence", "mystery", "memory", "balance",
+    "courage", "fortune", "wisdom", "danger", "freedom",
+
+    # Science & Tech
+    "rocket", "magnet", "circuit", "laser", "prism",
+    "oxygen", "atom", "radar", "fossil", "crystal",
+
+    # Actions (noun form)
+    "journey", "signal", "pattern", "mission", "puzzle",
+    "legend", "chapter", "riddle", "summit", "echo",
 ]
 
 WORDS_TO_MEMORIZE = 10
