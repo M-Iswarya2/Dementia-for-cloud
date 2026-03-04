@@ -235,28 +235,27 @@
             <h2>Assessment Results</h2>
 
             {% if status.all_completed %}
-            <p class="result-description success">
-                All tests completed successfully.
-            </p>
+                <p class="result-description success">
+                    All tests completed successfully.
+                </p>
 
-            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 16px;">
-                    <a href="{% url 'final_result' %}" class="btn btn-success">
-                        📈 View Final Results
-                    </a>
-
-                    <a href="{% url 'reset_tests' %}" class="btn btn-danger">
-                        🔄 Clear & Start New Assessment
-                    </a>
-                </div>
+                <a href="{% url 'final_result' %}" class="btn btn-success">
+                    📈 View Final Results
+                </a>
             {% else %}
-
                 <p class="result-description pending">
                     Complete all remaining tests to unlock results.
                 </p>
                 <button class="btn btn-disabled" disabled>🔒 Results Locked</button>
             {% endif %}
-        </div>
-    </div>
 
+            <!-- ✅ ALWAYS SHOW RESET -->
+            <div style="margin-top:20px;">
+                <a href="{% url 'reset_tests' %}" class="btn btn-danger">
+                    🔄 Clear & Start New Assessment
+                </a>
+            </div>
+
+        </div>
 </div>
 {% endblock %}

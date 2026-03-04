@@ -690,12 +690,14 @@ def reset_tests(request):
     status.trail_done = False
     status.voice_done = False
     status.questionnaire_done = False
+    status.digit_span_done = False   # ✅ MISSING
 
     status.memory_score = None
     status.attention_score = None
     status.trail_score = None
     status.voice_score = None
     status.questionnaire_score = None
+    status.digit_span_score = None   # ✅ MISSING
 
     status.save()
 
